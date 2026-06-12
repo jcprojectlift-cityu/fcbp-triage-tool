@@ -204,12 +204,20 @@
 
     </main>
 
-    <footer class="bg-gray-800 text-gray-400 text-center text-xs py-3 fixed bottom-0 left-0 right-0 max-w-md mx-auto">
-        JC PROJECT LIFT — 前線個案指引工具<br>
-        最後更新日期：2026年06月12日
-    </footer>
-
     <script>
+        const OFFICIAL_FOOTER_HTML = `
+    <footer class="mt-8 -mx-4 px-4 py-6 bg-slate-800 text-slate-400 rounded-b-xl border-t border-slate-700 text-center space-y-2">
+        <div class="text-xs font-semibold text-slate-200 tracking-wide">
+            JC PROJECT LIFT — 前線個案指引工具
+        </div>
+        <div class="text-[10px] text-amber-400 font-medium">
+            最後更新日期：2026年06月12日
+        </div>
+        <p class="text-[9px] text-slate-500 leading-relaxed max-w-xs mx-auto pt-2 border-t border-slate-700/50">
+            本提示系統所載資料僅供內部參考及教育用途，並不構成任何專業醫療或心理治療建議。
+        </p>
+    </footer>
+`;
         // 1. 資料庫定義 (根據你的圖表整理)
         const appData = {
             bereavement: {
@@ -245,6 +253,7 @@
     },
     // ... 其他機構以此類推
 ]
+
             },
             carer: {
                 title: "有照顧需要的家庭",
@@ -733,7 +742,7 @@ function backToTriageFromGeneral() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// 7.4 【全動態修正版】進入特定危機內頁（精準分離 精神問題 與 自殺自傷 內容）
+// 7.4 【全功能完美修正版】進入特定危機內頁（精準分離內容 + 完美修復 Footer）
 function openCrisisDetail(crisisKey) {
     // 進入危機內頁時，把危機主選單徹底藏起來
     const crisisMenu = document.getElementById('crisisMainMenu');
@@ -763,7 +772,7 @@ function openCrisisDetail(crisisKey) {
     // 🎯 精準抓取當前點擊的資料源 (mental 或 suicide)
     const data = crisisData[crisisKey];
     
-    // 動態更新頁面最頂端的動態大標題與圖標
+    // 動態更新頁面最頂端的動態大標題與圖擺
     if (detailPage && detailPage.querySelector('h1')) {
         detailPage.querySelector('h1').innerHTML = crisisKey === 'mental' ? '🧠 精神或情緒問題指引' : '🕯️ 自殺或傷害自己指引';
     }
@@ -817,10 +826,9 @@ function openCrisisDetail(crisisKey) {
     });
     yellowSupportHtml += '</div>';
 
-    // 🔴 紅燈 Box 渲染 (動態帶入對應危機的緊急資源)
+    // 🔴 紅燈 Box 渲染
     let redSupportHtml = '<div class="grid grid-cols-1 gap-2 mt-2">';
     data.triage.red.support.forEach(s => {
-        // 自殺模組與精神模組採用不同的警告圖標增加辨識度
         const iconClass = crisisKey === 'suicide' ? 'fa-solid fa-candle-holder' : 'fa-solid fa-shield-halved';
         redSupportHtml += `
             <div class="p-2.5 bg-red-50 border border-red-200 rounded-lg shadow-sm">
@@ -841,7 +849,7 @@ function openCrisisDetail(crisisKey) {
                     <span class="text-[10px] bg-green-700 px-2 py-0.5 rounded">低風險 / 穩定</span>
                 </div>
                 <div class="p-3 space-y-3">
-                    <div class="text-xs text-gray-660">
+                    <div class="text-xs text-gray-600">
                         <strong>📌 個案例子：</strong>
                         <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.green.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
                     </div>
@@ -907,9 +915,9 @@ function openCrisisDetail(crisisKey) {
     data.aftercare.forEach(af => aftercareHtml += `<li>${af}</li>`);
     aftercareHtml += '</ul>';
 
-    // 渲染進 HTML 主容器中
+    // 6. 重新完整組裝內容並灌入主容器（同時完美動態載入全域 Footer）
     document.getElementById('crisisDetailContent').innerHTML = `
-        <div class="space-y-6 pb-12">
+        <div class="space-y-6 pb-6">
             <div>
                 <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1"><i class="fa-solid fa-bookmark text-blue-600"></i> 1. 基本概念及基本理解</h3>
                 ${conceptHtml}
@@ -931,14 +939,19 @@ function openCrisisDetail(crisisKey) {
                 <h3 class="text-sm font-bold text-blue-950 mb-2 flex items-center gap-1"><i class="fa-solid fa-user-shield text-blue-700"></i> 5. FCBP 於轉介後的可行角色</h3>
                 ${aftercareHtml}
             </div>
-            
-            <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-center shadow-sm">
-                <p class="text-xs text-amber-900 font-medium"><i class="fa-solid fa-phone-volume mr-1"></i> ${crisisKey === 'mental' ? '醫管局二十四小時精神健康熱線' : '生命熱線 (24小時自殺預防專線)'}</p>
-                <a href="tel:${crisisKey === 'mental' ? '24667350' : '23820000'}" class="text-lg font-bold text-amber-700 tracking-wider block mt-0.5 hover:underline">
-                    <i class="fa-solid fa-phone mr-1"></i> ${crisisKey === 'mental' ? '2466 7350' : '2382 0000'}
-                </a>
-            </div>
         </div>
+
+        <div class="mt-8 bg-amber-50 border border-amber-200 p-3 rounded-lg text-center shadow-sm">
+            <p class="text-xs text-amber-900 font-medium">
+                <i class="fa-solid fa-phone-volume mr-1 text-amber-600 animate-pulse"></i> 
+                ${crisisKey === 'mental' ? '醫管局二十四小時精神健康熱線' : '生命熱線 (24小時自殺預防專線)'}
+            </p>
+            <a href="tel:${crisisKey === 'mental' ? '24667350' : '23820000'}" class="text-lg font-bold text-amber-700 tracking-wider block mt-0.5 hover:underline">
+                <i class="fa-solid fa-phone mr-1"></i> ${crisisKey === 'mental' ? '2466 7350' : '2382 0000'}
+            </a>
+        </div>
+
+        ${OFFICIAL_FOOTER_HTML}
     `;
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -957,6 +970,20 @@ function backToCrisisMenu() {
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// ==========================================
+// 🚀 網頁初始化：自動為所有一般個案分頁灌錄標準 Footer
+// ==========================================
+document.addEventListener("DOMContentLoaded", function() {
+    // 抓取網頁中所有一般個案分頁留下的 Footer 佔位盒子
+    const placeholders = document.querySelectorAll('.general-footer-placeholder');
+    
+    // 將我們定義好的完美 Footer 模板，一個一個灌進去！
+    placeholders.forEach(box => {
+        box.innerHTML = OFFICIAL_FOOTER_HTML;
+    });
+});
+
     </script>
 </body>
 </html>
