@@ -495,13 +495,19 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 7.1 新增危機個案資料庫
+     // 7.1 危機個案資料庫（紅燈個案狀況完全 Box 化更新）
 const crisisData = {
     mental: {
         title: "精神或情緒問題",
         concept: [
             "<strong>已知診斷：</strong>如已知街坊有精神分裂症等嚴重精神病情況，但不等於有診斷就是高危。相反地若街坊沒有任何病史，但卻出現以下風險條件，則需要進一步注意，所以要衡量其服藥習慣及以下各項風險條件。",
             "<strong>持續性：</strong>街坊的情緒或精神狀況或其表徵是一次性 (One-off) 或是持續出現，均會影響我們評估相關個案的風險程度。"
+        ],
+        preReferral: [
+            "如街坊有明顯的精神紊亂或情緒低落等狀況，在可行情況下建議與<strong>街坊先行探討其對自己精神狀況的了解及病識感</strong>。",
+            "FCBP可以<strong>收集街坊的精神狀況</strong>，於轉介ICCMW或其他服務時可能需要向轉介機構提供相關資料，以便有效作出轉介。",
+            "<strong>高病識感的街坊：</strong>可在取得同意下轉介接受社區服務，甚或使用CBF到私家診所接受精神科醫生的診治。",
+            "<strong>相對地低病識感街坊：</strong>可能需要取得家屬同意轉介ICCMW，又或是建議先以其身體健康狀況介入（失眠、心跳加速等）以便進一步鼓勵街坊接受醫療服務。"
         ],
         risks: [
             { title: "現實感知", desc: "<strong>現實脫節：</strong>出現幻覺（如聽到不存在的聲音）、妄想（如堅信被監視或被害）。" },
@@ -518,8 +524,11 @@ const crisisData = {
                 ],
                 actions: [
                     "<strong>促導街坊：</strong>持續接受醫療支援（如是精神病康復者）、傾聽街坊日常生活的需要、協助街坊面對日常生活、社交及/或工作上的各種需要及疑難、鼓勵情況相對穩定的街坊參與社房活動，建立關係。",
-                    "<strong>社房活動：</strong>於社房舉辦一些健康身心活動（靜觀、放鬆身心的班組、表達藝術治療小組等）。",
-                    "<strong>轉介支援：</strong>提供精神健康相關的網站、APP 或熱線（如：Shall We Talk 網站）予街坊參考。如有進一步輔導需要，可以嘗試在街坊同意下轉介其接受輔導服務（如：綜合家庭服務中心）。"
+                    "<strong>社房活動：</strong>於社房舉辦一些健康身心活動（靜觀、放鬆身心的班組、表達藝術治療小組等）。"
+                ],
+                support: [
+                    { name: "Shall We Talk 網站", detail: "提供精神健康相關的網站、APP 或熱線予街坊參考" },
+                    { name: "綜合家庭服務中心", detail: "如有進一步輔導需要，可以嘗試在街坊同意下轉介其接受輔導服務" }
                 ]
             },
             yellow: {
@@ -530,12 +539,18 @@ const crisisData = {
                     "日常功能還可，但缺乏動力。"
                 ],
                 actions: [
-                    "<strong>需要進行持續評估：</strong>在日常與街坊接觸時，可留意他/她的情緒狀況及反應，當察覺有異樣時可以立即跟進。",
+                    "<strong>需要進行持續評估：</strong>在日常與街坊接触時，可留意他/她的情緒狀況及反應，當察覺有異樣時可以立即跟進。",
                     "<strong>情緒調節：</strong>提供基礎情緒支援（如：深呼吸練習、積極傾聽），舒緩街坊當下壓力。如街坊動力較高而又合適，可一同制定一些改善身心靈的計劃（睡眠、靜觀等）。",
-                    "<strong>醫療跟進：</strong>嘗試了解街坊接受精神科服務的看法及意願，必要時可以先跟街坊說看醫生處理失眠、心跳等生理狀況，並在可行情況下陪同看醫生，增加街坊的安全感。（可考慮使用 CBF 資助街坊看醫生）",
-                    "<strong>轉介支援：</strong>轉介至<strong>精神健康綜合社區中心 (ICCMW)</strong>（不一定要所有人同意，有家人屬同意也可接受轉介，但需要具體表示個案所呈現的類似情緒或精神狀況）。或安排普通科門診或私家醫生（可以考慮使用 CBF）。如個案願意接受心理學家輔導，而又有經濟考慮，可建議使用港大心理服務組的服務。"
+                    "<strong>醫療跟進：</strong>嘗試了解街坊接受精神科服務的看法及意願，必要時可以先跟街坊說看醫生處理失眠、心跳等生理狀況，並在可行情況下陪同看醫生，增加街坊的安全感。"
+                ],
+                support: [
+                    { name: "CBF 資助睇醫生", detail: "可在可行情況下陪同看醫生，增加街坊的安全感。考慮使用 CBF 資助街坊看醫生。" },
+                    { name: "精神健康綜合社區中心 (ICCMW)", detail: "不一定要所有人同意，有家人屬同意也可接受轉介，但需要具體表示個案所呈現的類似情緒或精神狀況。" },
+                    { name: "普通科門診 / 私家醫生", detail: "安排普通科門診或私家醫生（可以考慮使用 CBF）。" },
+                    { name: "港大心理服務組", detail: "如個案願意接受心理學家輔導，而又有經濟考慮，可建議使用港大心理服務組的服務。" }
                 ]
             },
+            // 👉 核心 Box 化修改：紅燈介入與轉介支援全面拆分
             red: {
                 label: "紅燈個案狀況",
                 examples: [
@@ -545,11 +560,16 @@ const crisisData = {
                     "病識感弱，堅拒承認自己有情緒問題。",
                     "<strong>自傷或傷人意圖/行為。</strong>"
                 ],
+                // 紅燈核心安全應急原則
                 actions: [
                     "<strong>通報與評估：</strong>通報上司或督導以視情況衡量尋找專業支援服務。如街坊已出現嚴重的幻覺、妄想等表徵，建議先第一時間評估其安全（例如：同住家人的支援及安全風險）。",
                     "<strong>安全為大前提：</strong>在任何情況下需要先以個人安全為大前提，如在單獨會面時發現此等情況，建議在可行情況下尋找同事支援（甚至乎在可行情況下避免單獨進行探訪）。",
-                    "<strong>緊急介入：</strong>如街坊有表示強烈意願及行動去傷害別人或自己，通報上司或督導以視情況衡量適合的專業應急介入。",
-                    "<strong>轉介支援：</strong><strong>急症室服務</strong>（急症室設有觀察病房，並可以安排精神科護士或醫生評估個案情況，必要時可以強制病人入院接受治療）。或轉介至<strong>精神健康綜合社區中心 (ICCMW)</strong>（對有幻覺，妄想等個案，而又未有傷害自己或其他人類頭/行為的病人，可馬上轉介ICCMW跟進）。"
+                    "<strong>緊急介入：</strong>如街坊有表示強烈意願及行動去傷害別人或自己，通報上司或督導以視情況衡量適合的專業應急介入。"
+                ],
+                // 👇 新增紅燈獨立 Box 化轉介支援資源
+                support: [
+                    { name: "🚨 醫院急症室服務 (A&E)", detail: "急症室設有觀察病房，並可以安排精神科護士或醫生評估個案情況，<strong>必要時可以強制病人入院</strong>接受治療。" },
+                    { name: "🏥 精神健康綜合社區中心 (ICCMW)", detail: "對有幻覺、妄想等個案，而又<strong>未有</strong>即時傷害自己或其他人類頭/行為的病人，可馬上轉介 ICCMW 緊密跟進。" }
                 ]
             }
         },
@@ -613,14 +633,13 @@ function backToTriage() {
     document.getElementById('triagePage').classList.remove('hidden');
 }
 
-// 7.4 進入特定危機內頁
+// 7.4 進入特定危機內頁（支援綠、黃、紅燈全方位 Box 化渲染）
 function openCrisisDetail(crisisKey) {
     document.getElementById('crisisMainMenu').classList.add('hidden');
     const detailPage = document.getElementById('crisisDetailPage');
     detailPage.classList.remove('hidden');
     
     if(crisisKey !== 'mental') {
-        // 其他四項預留的提示
         document.getElementById('crisisDetailContent').innerHTML = `
             <div class="p-8 text-center text-gray-500 italic bg-white rounded-xl shadow-sm">
                 <i class="fa-solid fa-screwdriver-wrench text-4xl text-gray-300 mb-2"></i>
@@ -630,98 +649,169 @@ function openCrisisDetail(crisisKey) {
         return;
     }
     
-    // 渲染精神或情緒問題的架構
     const data = crisisData.mental;
     
-    // 建立基本概念 HTML
-    let conceptHtml = '<ul class="space-y-3 text-sm text-gray-700">';
-    data.concept.forEach(c => conceptHtml += `<li class="bg-slate-50 p-3 rounded border-l-4 border-slate-400">${c}</li>`);
+    // 1. 建立基本概念 HTML
+    let conceptHtml = '<ul class="space-y-2 text-xs text-gray-700">';
+    data.concept.forEach(c => conceptHtml += `<li class="bg-slate-50 p-3 rounded border-l-4 border-slate-400 leading-relaxed">${c}</li>`);
     conceptHtml += '</ul>';
     
-    // 建立風險評估 HTML
+    // 2. 建立轉介前預備 HTML
+    let preReferralHtml = '<ul class="space-y-2 text-xs text-gray-700">';
+    data.preReferral.forEach(p => preReferralHtml += `<li class="bg-blue-50 p-3 rounded border-l-4 border-blue-400 leading-relaxed">${p}</li>`);
+    preReferralHtml += '</ul>';
+    
+    // 3. 建立風險評估 HTML
     let riskHtml = '<div class="grid grid-cols-1 gap-2">';
     data.risks.forEach(r => {
         riskHtml += `
             <div class="p-3 bg-stone-50 border border-stone-200 rounded flex gap-3">
-                <span class="bg-stone-600 text-white font-bold text-xs px-2 py-1 rounded h-fit shrink-0">${r.title}</span>
+                <span class="bg-stone-600 text-white font-bold text-[11px] px-2 py-0.5 rounded h-fit shrink-0">${r.title}</span>
                 <p class="text-xs text-gray-600 leading-relaxed">${r.desc}</p>
             </div>`;
     });
     riskHtml += '</div>';
 
-    // 建立紅黃綠分流 HTML
+    // 4. 建立三色燈號 Box 化 HTML
+    
+    // 綠燈 Box 渲染
+    let greenSupportHtml = '<div class="grid grid-cols-1 gap-2 mt-2">';
+    data.triage.green.support.forEach(s => {
+        greenSupportHtml += `
+            <div class="p-2.5 bg-green-50/60 border border-green-200 rounded-lg">
+                <h4 class="font-bold text-green-900 text-xs flex items-center gap-1.5">
+                    <i class="fa-solid fa-square-rss text-green-600"></i> ${s.name}
+                </h4>
+                <p class="text-[11px] text-green-800 mt-0.5 leading-relaxed">${s.detail}</p>
+            </div>`;
+    });
+    greenSupportHtml += '</div>';
+
+    // 黃燈 Box 渲染
+    let yellowSupportHtml = '<div class="grid grid-cols-1 gap-2 mt-2">';
+    data.triage.yellow.support.forEach(s => {
+        yellowSupportHtml += `
+            <div class="p-2.5 bg-yellow-50/60 border border-yellow-200 rounded-lg">
+                <h4 class="font-bold text-yellow-900 text-xs flex items-center gap-1.5">
+                    <i class="fa-solid fa-hand-holding-hand text-yellow-600"></i> ${s.name}
+                </h4>
+                <p class="text-[11px] text-yellow-800 mt-0.5 leading-relaxed">${s.detail}</p>
+            </div>`;
+    });
+    yellowSupportHtml += '</div>';
+
+    // 🔴 紅燈 Box 渲染 (新增高危警示樣式)
+    let redSupportHtml = '<div class="grid grid-cols-1 gap-2 mt-2">';
+    data.triage.red.support.forEach(s => {
+        redSupportHtml += `
+            <div class="p-2.5 bg-red-50 border border-red-200 rounded-lg shadow-sm">
+                <h4 class="font-bold text-red-900 text-xs flex items-center gap-1.5">
+                    <i class="fa-solid fa-shield-halved text-red-600 animate-pulse"></i> ${s.name}
+                </h4>
+                <p class="text-[11px] text-red-800 mt-0.5 leading-relaxed font-medium">${s.detail}</p>
+            </div>`;
+    });
+    redSupportHtml += '</div>';
+
     let triageHtml = `
         <div class="space-y-4">
-            <div class="border-2 border-green-500 rounded-xl overflow-hidden shadow-sm">
-                <div class="bg-green-600 text-white p-2.5 font-bold text-sm flex justify-between items-center">
-                    <span><i class="fa-solid fa-circle text-white animate-pulse mr-1"></i> ${data.triage.green.label}</span>
-                    <span class="text-xs bg-green-700 px-2 py-0.5 rounded">低風險/穩定</span>
+            <div class="border border-green-500 rounded-xl overflow-hidden shadow-sm bg-white">
+                <div class="bg-green-600 text-white p-2.5 font-bold text-xs flex justify-between items-center">
+                    <span><i class="fa-solid fa-circle-check mr-1"></i> ${data.triage.green.label}</span>
+                    <span class="text-[10px] bg-green-700 px-2 py-0.5 rounded">低風險 / 穩定</span>
                 </div>
-                <div class="p-3 bg-white space-y-3">
-                    <div class="text-xs text-gray-500 bg-green-50 p-2 rounded border border-green-100">
-                        <strong>📌 個案例子：</strong><ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.green.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
+                <div class="p-3 space-y-3">
+                    <div class="text-xs text-gray-600">
+                        <strong>📌 個案例子：</strong>
+                        <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.green.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
                     </div>
-                    <div class="text-xs text-gray-700">
-                        <strong>🛠️ 可行的介入手法例子：</strong><ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.green.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
+                    <div class="text-xs text-gray-600 border-t border-gray-100 pt-2">
+                        <strong>🛠️ 可行的介入手法例子：</strong>
+                        <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.green.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
                     </div>
-                </div>
-            </div>
-            <div class="border-2 border-yellow-500 rounded-xl overflow-hidden shadow-sm">
-                <div class="bg-yellow-500 text-white p-2.5 font-bold text-sm flex justify-between items-center">
-                    <span><i class="fa-solid fa-circle text-white animate-pulse mr-1"></i> ${data.triage.yellow.label}</span>
-                    <span class="text-xs bg-yellow-600 px-2 py-0.5 rounded">中風險/警覺</span>
-                </div>
-                <div class="p-3 bg-white space-y-3">
-                    <div class="text-xs text-gray-500 bg-yellow-50 p-2 rounded border border-yellow-100">
-                        <strong>📌 個案例子：</strong><ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.yellow.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
-                    </div>
-                    <div class="text-xs text-gray-700">
-                        <strong>🛠️ 可行的介入手法與轉介支援：</strong><ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.yellow.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
+                    <div class="border-t border-gray-100 pt-2">
+                        <strong class="text-xs text-gray-700">🔗 可行的轉介支援服務：</strong>
+                        ${greenSupportHtml}
                     </div>
                 </div>
             </div>
-            <div class="border-2 border-red-500 rounded-xl overflow-hidden shadow-sm">
-                <div class="bg-red-600 text-white p-2.5 font-bold text-sm flex justify-between items-center">
-                    <span><i class="fa-solid fa-circle text-white animate-pulse mr-1"></i> ${data.triage.red.label}</span>
-                    <span class="text-xs bg-red-700 px-2 py-0.5 rounded">高風險/緊急</span>
+
+            <div class="border border-yellow-500 rounded-xl overflow-hidden shadow-sm bg-white">
+                <div class="bg-yellow-500 text-white p-2.5 font-bold text-xs flex justify-between items-center">
+                    <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> ${data.triage.yellow.label}</span>
+                    <span class="text-[10px] bg-yellow-600 px-2 py-0.5 rounded">中風險 / 警覺</span>
                 </div>
-                <div class="p-3 bg-white space-y-3">
-                    <div class="text-xs text-red-700 bg-red-50 p-2 rounded border border-red-100 font-medium">
-                        <strong>🚨 高風險條件 / 例子：</strong><ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.red.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
+                <div class="p-3 space-y-3">
+                    <div class="text-xs text-gray-600">
+                        <strong>📌 個案例子：</strong>
+                        <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.yellow.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
                     </div>
-                    <div class="text-xs text-gray-700">
-                        <strong>🛠️ 應急介入與轉介支援（安全大前提）：</strong><ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.red.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
+                    <div class="text-xs text-gray-600 border-t border-gray-100 pt-2">
+                        <strong>🛠️ 可行的介入手法：</strong>
+                        <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.yellow.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
+                    </div>
+                    <div class="border-t border-gray-100 pt-2">
+                        <strong class="text-xs text-gray-700">🔗 可行的轉介支援服務：</strong>
+                        ${yellowSupportHtml}
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-2 border-red-600 rounded-xl overflow-hidden shadow-md bg-white">
+                <div class="bg-red-600 text-white p-2.5 font-bold text-xs flex justify-between items-center animate-pulse">
+                    <span><i class="fa-solid fa-circle-exclamation mr-1"></i> ${data.triage.red.label}</span>
+                    <span class="text-[10px] bg-red-800 px-2 py-0.5 rounded font-black tracking-wider">高風險 / 緊急</span>
+                </div>
+                <div class="p-3 space-y-3">
+                    <div class="text-xs text-red-700 bg-red-50 p-2.5 rounded-lg border border-red-100 font-medium">
+                        <strong>🚨 高風險條件 / 例子：</strong>
+                        <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.red.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
+                    </div>
+                    <div class="text-xs text-gray-600 border-t border-gray-100 pt-2">
+                        <strong>🛠️ 應急介入手法（安全為大前提）：</strong>
+                        <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.red.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
+                    </div>
+                    <div class="border-t border-gray-100 pt-2">
+                        <strong class="text-xs text-red-900 flex items-center gap-1">
+                            <i class="fa-solid fa-truck-medical"></i> 🔗 應急應變與緊急轉介支援：
+                        </strong>
+                        ${redSupportHtml}
                     </div>
                 </div>
             </div>
         </div>
     `;
 
-    // 建立轉介後可行角色 HTML
+    // 5. 建立轉介後可行角色 HTML
     let aftercareHtml = '<ul class="list-disc pl-4 text-xs text-gray-600 space-y-2 leading-relaxed">';
     data.aftercare.forEach(af => aftercareHtml += `<li>${af}</li>`);
     aftercareHtml += '</ul>';
 
-    // 塞入內頁
+    // 6. 將所有處理好的模組結構渲染進 HTML 容器
     document.getElementById('crisisDetailContent').innerHTML = `
         <div class="space-y-6 pb-12">
             <div>
-                <h3 class="text-sm font-bold text-slate-800 mb-2"><i class="fa-solid fa-bookmark text-blue-600 mr-1"></i> 1. 基本概念及基本理解</h3>
+                <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1"><i class="fa-solid fa-bookmark text-blue-600"></i> 1. 基本概念及基本理解</h3>
                 ${conceptHtml}
             </div>
             <div>
-                <h3 class="text-sm font-bold text-slate-800 mb-2"><i class="fa-solid fa-magnifying-glass-chart text-blue-600 mr-1"></i> 2. 風險條件辦識評估</h3>
+                <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1"><i class="fa-solid fa-paste text-blue-600"></i> 2. 轉介前的預備工作</h3>
+                ${preReferralHtml}
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1"><i class="fa-solid fa-magnifying-glass-chart text-blue-600"></i> 3. 危機風險條件辨識評估</h3>
                 ${riskHtml}
             </div>
             <div>
-                <h3 class="text-sm font-bold text-slate-800 mb-2"><i class="fa-solid fa-traffic-light text-blue-600 mr-1"></i> 3. 介入分流 (紅、黃、綠燈例子)</h3>
-                <p class="text-[11px] text-gray-400 mb-2 italic">僅供FCBP熟悉相關危機個案的可行處理方法，並非要求FCBP必須要完成之任務。</p>
+                <h3 class="text-sm font-bold text-slate-800 mb-1 flex items-center gap-1"><i class="fa-solid fa-traffic-light text-blue-600"></i> 4. 介入分流 (紅、黃、綠燈指引)</h3>
+                <p class="text-[11px] text-gray-400 mb-3 italic">僅供 FCBP 熟悉相關危機個案的可行處理方法，並非要求必須完成之任務。</p>
                 ${triageHtml}
             </div>
             <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
-                <h3 class="text-sm font-bold text-blue-950 mb-2"><i class="fa-solid fa-user-shield mr-1"></i> 4. FCBP 於轉介後的可行角色</h3>
+                <h3 class="text-sm font-bold text-blue-950 mb-2 flex items-center gap-1"><i class="fa-solid fa-user-shield text-blue-700"></i> 5. FCBP 於轉介後的可行角色</h3>
                 ${aftercareHtml}
             </div>
+            
             <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-center shadow-sm">
                 <p class="text-xs text-amber-900 font-medium"><i class="fa-solid fa-phone-volume mr-1"></i> 醫管局二十四小時精神健康熱線</p>
                 <a href="tel:24667350" class="text-lg font-bold text-amber-700 tracking-wider block mt-0.5 hover:underline"><i class="fa-solid fa-phone mr-1"></i> 2466 7350</a>
