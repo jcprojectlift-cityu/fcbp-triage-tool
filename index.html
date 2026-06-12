@@ -98,12 +98,12 @@
             <i class="fa-solid fa-chevron-right text-gray-300"></i>
         </button>
 
-        <button onclick="openCrisisDetail('suicide')" class="w-full p-4 bg-white opacity-60 hover:bg-gray-50 border-l-4 border-gray-400 rounded-lg shadow-sm flex justify-between items-center cursor-pointer text-left">
+        <button onclick="openCrisisDetail('suicide')" class="w-full p-4 bg-white hover:bg-red-50 border-l-4 border-red-500 rounded-lg shadow-sm flex justify-between items-center cursor-pointer text-left">
             <div>
-                <h3 class="font-bold text-gray-700 text-base">🕯️ 自殺或傷害自己</h3>
-                <p class="text-xs text-gray-400 mt-0.5">(模組規劃中)</p>
+                <h3 class="font-bold text-gray-800 text-base">🕯️ 自殺或傷害自己</h3>
+                <p class="text-xs text-gray-500 mt-0.5">自殺念頭、計劃評估、安全計劃應對清單</p>
             </div>
-            <i class="fa-solid fa-lock text-gray-300"></i>
+            <i class="fa-solid fa-chevron-right text-gray-300"></i>
         </button>
 
         <button onclick="openCrisisDetail('dv')" class="w-full p-4 bg-white opacity-60 hover:bg-gray-50 border-l-4 border-gray-400 rounded-lg shadow-sm flex justify-between items-center cursor-pointer text-left">
@@ -495,7 +495,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-     // 7.1 危機個案資料庫（紅燈個案狀況完全 Box 化更新）
+     // 7.1 危機個案資料庫（已完美擴充精神與自殺雙模組，紅燈全面 Box 化拆分）
 const crisisData = {
     mental: {
         title: "精神或情緒問題",
@@ -539,7 +539,7 @@ const crisisData = {
                     "日常功能還可，但缺乏動力。"
                 ],
                 actions: [
-                    "<strong>需要進行持續評估：</strong>在日常與街坊接触時，可留意他/她的情緒狀況及反應，當察覺有異樣時可以立即跟進。",
+                    "<strong>需要進行持續評估：</strong>在日常與街坊接觸時，可留意他/她的情緒狀況及反應，當察覺有異樣時可以立即跟進。",
                     "<strong>情緒調節：</strong>提供基礎情緒支援（如：深呼吸練習、積極傾聽），舒緩街坊當下壓力。如街坊動力較高而又合適，可一同制定一些改善身心靈的計劃（睡眠、靜觀等）。",
                     "<strong>醫療跟進：</strong>嘗試了解街坊接受精神科服務的看法及意願，必要時可以先跟街坊說看醫生處理失眠、心跳等生理狀況，並在可行情況下陪同看醫生，增加街坊的安全感。"
                 ],
@@ -550,7 +550,6 @@ const crisisData = {
                     { name: "港大心理服務組", detail: "如個案願意接受心理學家輔導，而又有經濟考慮，可建議使用港大心理服務組的服務。" }
                 ]
             },
-            // 👉 核心 Box 化修改：紅燈介入與轉介支援全面拆分
             red: {
                 label: "紅燈個案狀況",
                 examples: [
@@ -560,13 +559,11 @@ const crisisData = {
                     "病識感弱，堅拒承認自己有情緒問題。",
                     "<strong>自傷或傷人意圖/行為。</strong>"
                 ],
-                // 紅燈核心安全應急原則
                 actions: [
                     "<strong>通報與評估：</strong>通報上司或督導以視情況衡量尋找專業支援服務。如街坊已出現嚴重的幻覺、妄想等表徵，建議先第一時間評估其安全（例如：同住家人的支援及安全風險）。",
                     "<strong>安全為大前提：</strong>在任何情況下需要先以個人安全為大前提，如在單獨會面時發現此等情況，建議在可行情況下尋找同事支援（甚至乎在可行情況下避免單獨進行探訪）。",
                     "<strong>緊急介入：</strong>如街坊有表示強烈意願及行動去傷害別人或自己，通報上司或督導以視情況衡量適合的專業應急介入。"
                 ],
-                // 👇 新增紅燈獨立 Box 化轉介支援資源
                 support: [
                     { name: "🚨 醫院急症室服務 (A&E)", detail: "急症室設有觀察病房，並可以安排精神科護士或醫生評估個案情況，<strong>必要時可以強制病人入院</strong>接受治療。" },
                     { name: "🏥 精神健康綜合社區中心 (ICCMW)", detail: "對有幻覺、妄想等個案，而又<strong>未有</strong>即時傷害自己或其他人類頭/行為的病人，可馬上轉介 ICCMW 緊密跟進。" }
@@ -576,6 +573,90 @@ const crisisData = {
         aftercare: [
             "在可行的情况下，與轉介機構保持溝通與合作，例如：可持續觀察街坊在社房的情況，並適時與轉介機構同工交流。在處理嚴重精神病個案時，在特殊需要情況下甚至乎可以與精神科社區康復護士聯繫，以加強對街坊的支援。",
             "如情況許可，可以鼓勵情況相對穩定的街坊參與社房活動，建立關係（需要考慮個案意願）。"
+        ]
+    },
+    suicide: {
+        title: "自殺或傷害自己",
+        concept: [
+            "<strong>引發點：</strong>自殺是一個衝動的行為，但並非無跡可尋。因此，相信每個人有衝動行為的背後均可能有一系列引發的事件，而事件可能與失去 (Loss) 有關。況且，引發自殺行為的事件往往是一個導火線，不一定是問題的核心。",
+            "<strong>態度：</strong>以當事人的角度出發，並以不批判態度多了解當事人，才有望更深入了解當事人的痛苦。",
+            "<div class='bg-purple-50 text-purple-900 border border-purple-200 p-2.5 rounded font-medium text-[11px] flex items-center gap-1.5'><i class='fa-solid fa-triangle-exclamation'></i> 核心核心提醒：並非需要 FCBP 做輔導，只需要知道基本概念就足夠。</div>"
+        ],
+        preReferral: [
+            "提供 24 小時的支援熱線資料予街坊備用，鼓勵他們如有疑難及困擾可以尋找支援。<br><strong class='text-red-600 block mt-1'><i class='fa-solid fa-phone-flip'></i> 生命熱線：2382 0000 / 撒瑪利亞防止自殺會：2389 2222 / 社署熱線：2343 2255</strong>"
+        ],
+        risks: [
+            { title: "自殺念頭", desc: "透露自殺或傷害自己的想法；對未來感到絕望、不再計劃將來；威脅要尋死。" },
+            { title: "自殺計劃", desc: "尋找自殺的方法或途徑、嘗試獲取自殺的工具、安排身後事，例如：寫遺書、將貴重財物轉贈他人。" },
+            { title: "自殺經驗", desc: "過往曾企圖自殺；有自我傷害行為。" },
+            { title: "環境因素", desc: "經歷意外或災難；受虐待或暴力對待；受性侵犯；受欺凌或欺凌他人；與家人、朋友、情人分離；家人、朋友、情人去世；有家族成員曾自殺過身（特別是父母）；父母有精神健康問題（例如：抑鬱症）；獨居。" },
+            { title: "其他危機", desc: "精神健康問題（例如：抑鬱症）；性情和情緒大幅改變；酗酒、濫用藥物；罹患重病。" }
+        ],
+        triage: {
+            green: {
+                label: "綠燈個案狀況",
+                examples: [
+                    "街坊只輕輕一次提及自己有尋死或傷害自己的想法，但沒有意圖及計劃。",
+                    "街坊本身、親友等有支援，並對街坊維護自身安全有信心。",
+                    "有一定的保護因素。"
+                ],
+                actions: [
+                    "<strong>情緒急救：</strong>運用積極傾聽，讓街坊感到被接納，減輕孤獨感。",
+                    "<strong>制定安全計劃：</strong>與街坊制定及討論安全計劃：探討個案的保護因素（如：家人、寵物），鼓勵其在情緒低落時主動聯絡這些支持系統。",
+                    "<strong>探討壓力源：</strong>在情況許可下，與街坊探討其壓力及引發事件的來源，嘗試了解相關事件的情況，並在適當時候嘗試陪伴街坊拆解（尋找及連結社會資源）或轉介至其他合適單位跟進。",
+                    "<strong>角色定位：</strong>繼續維持日常的聯繫，關注其情緒穩定度，扮演支持角色。"
+                ],
+                support: [
+                    { name: "Shall We Talk 網站", detail: "提供精神健康相關的網站、APP 或熱線予街坊參考。" },
+                    { name: "綜合家庭服務中心", detail: "如有進一步輔導需要，可以嘗試在街坊同意下轉介其接受輔導服務。" }
+                ]
+            },
+            yellow: {
+                label: "黃燈個案狀況",
+                examples: [
+                    "有自殺念頭。",
+                    "自殺的意圖時有時無。",
+                    "仍然有能力去維護自身安全。",
+                    "相對地有一些保護因素（有活下去的理由，有人支持等）。",
+                    "有傷害自己的行為（劈手）。"
+                ],
+                actions: [
+                    "<strong>危機應對清單：</strong>與街坊制定安全計劃（危機應對清單）：與街坊共同列出能分散注意力的方法（如：去公園走走、聽音樂、洗澡），並持續跟進相關的計劃是否有效。",
+                    "<strong>尋找保護因素：</strong>協助街坊尋找可能被忽略的保護因素，嘗試為街坊建立社區連繫，提醒街坊生命中重要的聯繫點（如家人、愛好）。",
+                    "<strong>深入探討源頭：</strong>在情況許可下，與街坊探討其壓力及引發事件的來源，嘗試了解相關事件的情況，並在適當時候嘗試陪伴街坊拆解（尋找及連結社會資源）或轉介至其他合適單位跟進。"
+                ],
+                support: [
+                    { name: "精神健康綜合社區中心 (ICCMW)", detail: "不一定要所有人同意，有家人同意也可轉介，但需要具體表示個案所呈現的狀況。" },
+                    { name: "醫療與心理輔導", detail: "安排普通科門診、私家醫生或接受心理輔導。" },
+                    { name: "醫管局精神健康熱線", detail: "可在有需要時致電醫管局二十四小時精神健康熱線諮詢服務：2466 7350。" }
+                ]
+            },
+            red: {
+                label: "紅燈個案狀況",
+                examples: [
+                    "有持續的自殺念頭及意圖。",
+                    "<strong>有具體的自殺計劃，且沒有能力保護自己安全，缺乏保護因素。</strong>",
+                    "長期有精神及情緒狀況。",
+                    "慢性疼痛及疾病。",
+                    "不穩定的生活狀態，且沒有活下去的理由。",
+                    "抗壓能力較低。"
+                ],
+                actions: [
+                    "<strong>即時匯報原則：</strong>如有突發危機，請即時與上司或中心督導匯報，切勿自行處理！",
+                    "<strong>可暫緩風險處置：</strong>確保可與街坊的家人或親友聯絡，通報事件並請他們留意（如情況許可）。",
+                    "<strong>合約與介入技巧：</strong>運用 Contracting 技巧說服街坊同意轉介接受進一步的輔導服務。",
+                    "<strong>即時危機應變：</strong>如街坊已表示有強烈的傷害自己念頭或有具體計劃，如仍有空間諮詢上司，可商討後決定是否需要盡快說服街坊接受醫療服務，甚至乎要送院接受治療。"
+                ],
+                support: [
+                    { name: "🕯️ 撒瑪利亞防止自殺會 — 危機輔導服務", detail: "可轉介個案至撒瑪利亞防止自殺會安排自殺個案輔導。" },
+                    { name: "🚨 醫院急症室服務 (A&E)", detail: "急症室設有觀察病房，並可以安排精神科護士或醫生評估個案情況，必要時可以強制病人入院接受治療。" }
+                ]
+            }
+        },
+        aftercare: [
+            "<strong>擔任情緒緩衝：</strong>得到個案同意下，作為街坊與專業社工之間的溝通橋樑。",
+            "<strong>進度追蹤：</strong>定期關心其服務使用情況，若街坊退縮則回報督導。",
+            "<strong>社區連結：</strong>如情況許可，可以鼓勵情況相對穩定的街坊參與社房活動，建立關係（需要考慮個案意願）。"
         ]
     }
 };
@@ -652,20 +733,24 @@ function backToTriageFromGeneral() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// 7.4 進入特定危機內頁（支援綠、黃、紅燈全方位 Box 化渲染）
+// 7.4 【全動態修正版】進入特定危機內頁（精準分離 精神問題 與 自殺自傷 內容）
 function openCrisisDetail(crisisKey) {
-    // 進入危機內頁時，把危機主選單藏起來
-    if (document.getElementById('crisisMainMenu')) {
-        document.getElementById('crisisMainMenu').classList.add('hidden');
+    // 進入危機內頁時，把危機主選單徹底藏起來
+    const crisisMenu = document.getElementById('crisisMainMenu');
+    if (crisisMenu) {
+        crisisMenu.classList.add('hidden');
+        crisisMenu.style.display = 'none';
     }
-    // 把危機詳細內頁秀出來
+    
+    // 把危機詳細內頁在 class 和 style 層面同時解除隱藏
     const detailPage = document.getElementById('crisisDetailPage');
-    if (detailPage) detailPage.classList.remove('hidden');
+    if (detailPage) {
+        detailPage.classList.remove('hidden');
+        detailPage.style.display = 'block';
+    }
     
-    // ... 後續的渲染資料邏輯 ...
-
-    
-    if(crisisKey !== 'mental') {
+    // 檢查是否有對應的資料，若非 mental 或 suicide 則顯示規劃中
+    if (crisisKey !== 'mental' && crisisKey !== 'suicide') {
         document.getElementById('crisisDetailContent').innerHTML = `
             <div class="p-8 text-center text-gray-500 italic bg-white rounded-xl shadow-sm">
                 <i class="fa-solid fa-screwdriver-wrench text-4xl text-gray-300 mb-2"></i>
@@ -675,7 +760,13 @@ function openCrisisDetail(crisisKey) {
         return;
     }
     
-    const data = crisisData.mental;
+    // 🎯 精準抓取當前點擊的資料源 (mental 或 suicide)
+    const data = crisisData[crisisKey];
+    
+    // 動態更新頁面最頂端的動態大標題與圖標
+    if (detailPage && detailPage.querySelector('h1')) {
+        detailPage.querySelector('h1').innerHTML = crisisKey === 'mental' ? '🧠 精神或情緒問題指引' : '🕯️ 自殺或傷害自己指引';
+    }
     
     // 1. 建立基本概念 HTML
     let conceptHtml = '<ul class="space-y-2 text-xs text-gray-700">';
@@ -698,9 +789,9 @@ function openCrisisDetail(crisisKey) {
     });
     riskHtml += '</div>';
 
-    // 4. 建立三色燈號 Box 化 HTML
+    // 4. 建立三色燈號 Box 化 HTML（動態綁定當前模組的 support 陣列）
     
-    // 綠燈 Box 渲染
+    // 🟢 綠燈 Box 渲染
     let greenSupportHtml = '<div class="grid grid-cols-1 gap-2 mt-2">';
     data.triage.green.support.forEach(s => {
         greenSupportHtml += `
@@ -713,7 +804,7 @@ function openCrisisDetail(crisisKey) {
     });
     greenSupportHtml += '</div>';
 
-    // 黃燈 Box 渲染
+    // 🟡 黃燈 Box 渲染
     let yellowSupportHtml = '<div class="grid grid-cols-1 gap-2 mt-2">';
     data.triage.yellow.support.forEach(s => {
         yellowSupportHtml += `
@@ -726,19 +817,22 @@ function openCrisisDetail(crisisKey) {
     });
     yellowSupportHtml += '</div>';
 
-    // 🔴 紅燈 Box 渲染 (新增高危警示樣式)
+    // 🔴 紅燈 Box 渲染 (動態帶入對應危機的緊急資源)
     let redSupportHtml = '<div class="grid grid-cols-1 gap-2 mt-2">';
     data.triage.red.support.forEach(s => {
+        // 自殺模組與精神模組採用不同的警告圖標增加辨識度
+        const iconClass = crisisKey === 'suicide' ? 'fa-solid fa-candle-holder' : 'fa-solid fa-shield-halved';
         redSupportHtml += `
             <div class="p-2.5 bg-red-50 border border-red-200 rounded-lg shadow-sm">
                 <h4 class="font-bold text-red-900 text-xs flex items-center gap-1.5">
-                    <i class="fa-solid fa-shield-halved text-red-600 animate-pulse"></i> ${s.name}
+                    <i class="${iconClass} text-red-600 animate-pulse"></i> ${s.name}
                 </h4>
                 <p class="text-[11px] text-red-800 mt-0.5 leading-relaxed font-medium">${s.detail}</p>
             </div>`;
     });
     redSupportHtml += '</div>';
 
+    // 整合三色分流大圖版
     let triageHtml = `
         <div class="space-y-4">
             <div class="border border-green-500 rounded-xl overflow-hidden shadow-sm bg-white">
@@ -747,7 +841,7 @@ function openCrisisDetail(crisisKey) {
                     <span class="text-[10px] bg-green-700 px-2 py-0.5 rounded">低風險 / 穩定</span>
                 </div>
                 <div class="p-3 space-y-3">
-                    <div class="text-xs text-gray-600">
+                    <div class="text-xs text-gray-660">
                         <strong>📌 個案例子：</strong>
                         <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.green.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
                     </div>
@@ -813,7 +907,7 @@ function openCrisisDetail(crisisKey) {
     data.aftercare.forEach(af => aftercareHtml += `<li>${af}</li>`);
     aftercareHtml += '</ul>';
 
-    // 6. 將所有處理好的模組結構渲染進 HTML 容器
+    // 渲染進 HTML 主容器中
     document.getElementById('crisisDetailContent').innerHTML = `
         <div class="space-y-6 pb-12">
             <div>
@@ -839,16 +933,29 @@ function openCrisisDetail(crisisKey) {
             </div>
             
             <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-center shadow-sm">
-                <p class="text-xs text-amber-900 font-medium"><i class="fa-solid fa-phone-volume mr-1"></i> 醫管局二十四小時精神健康熱線</p>
-                <a href="tel:24667350" class="text-lg font-bold text-amber-700 tracking-wider block mt-0.5 hover:underline"><i class="fa-solid fa-phone mr-1"></i> 2466 7350</a>
+                <p class="text-xs text-amber-900 font-medium"><i class="fa-solid fa-phone-volume mr-1"></i> ${crisisKey === 'mental' ? '醫管局二十四小時精神健康熱線' : '生命熱線 (24小時自殺預防專線)'}</p>
+                <a href="tel:${crisisKey === 'mental' ? '24667350' : '23820000'}" class="text-lg font-bold text-amber-700 tracking-wider block mt-0.5 hover:underline">
+                    <i class="fa-solid fa-phone mr-1"></i> ${crisisKey === 'mental' ? '2466 7350' : '2382 0000'}
+                </a>
             </div>
         </div>
     `;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// 7.6 危機詳細內頁返回危機主選單（同步解除 Style）
 function backToCrisisMenu() {
-    document.getElementById('crisisDetailPage').classList.add('hidden');
-    document.getElementById('crisisMainMenu').classList.remove('hidden');
+    const detailPage = document.getElementById('crisisDetailPage');
+    if (detailPage) {
+        detailPage.classList.add('hidden');
+        detailPage.style.display = 'none';
+    }
+    const crisisMenu = document.getElementById('crisisMainMenu');
+    if (crisisMenu) {
+        crisisMenu.classList.remove('hidden');
+        crisisMenu.style.display = 'flex'; // 恢復危機選單的全螢幕 flex 佈局
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
     </script>
 </body>
