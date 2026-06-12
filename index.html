@@ -580,64 +580,90 @@ const crisisData = {
     }
 };
 
-// 7.2 修改分流控制邏輯（改用固定 ID 控制，徹底防卡死）
+// ==========================================
+// 核心頁面切換控制：中央控管雙重解鎖版
+// ==========================================
+
+// 7.2 分流控制邏輯：同時清除 class 與 style 鎖定，徹底根治空白頁
 function selectTriage(type) {
     const triagePage = document.getElementById('triagePage');
     const crisisMenu = document.getElementById('crisisMainMenu');
+    const crisisDetail = document.getElementById('crisisDetailPage');
     const genHeader = document.getElementById('generalHeader');
     const genMain = document.getElementById('generalMain');
     
+    // 【強力清空】第一步：強制把所有人的兩種隱藏模式（Class 與 Style）通通啟動
+    const allPages = [triagePage, crisisMenu, crisisDetail, genHeader, genMain];
+    allPages.forEach(page => {
+        if (page) {
+            page.classList.add('hidden');          // 處理 Tailwind 的 hidden
+            page.style.display = 'none';           // 強制寫入 style="display: none"
+        }
+    });
+
+    // 第二步：精準放行當下要看的畫面（同時解鎖兩種模式）
     if (type === 'general') {
-        // 進入一般個案：隱藏分流首頁與危機選單
-        if (triagePage) triagePage.classList.add('hidden');
-        if (crisisMenu) crisisMenu.classList.add('hidden');
-        
-        // 顯示一般個案的主介面
-        if (genHeader) genHeader.classList.remove('hidden');
-        if (genMain) genMain.classList.remove('hidden');
-        
-        switchCategory('bereavement');
+        if (genHeader) { genHeader.classList.remove('hidden'); genHeader.style.display = 'block'; }
+        if (genMain) { genMain.classList.remove('hidden'); genMain.style.display = 'block'; }
+        switchCategory('bereavement'); // 預設顯示一般個案的第一個分類
         
     } else if (type === 'crisis') {
-        // 進入危機個案：隱藏分流首頁
-        if (triagePage) triagePage.classList.add('hidden');
-        
-        // 隱藏一般個案的主介面（如果它們存在的話）
-        if (genHeader) genHeader.classList.add('hidden');
-        if (genMain) genMain.classList.add('hidden');
-        
-        // 顯示危機主選單
-        if (crisisMenu) crisisMenu.classList.remove('hidden');
+        if (crisisMenu) { 
+            crisisMenu.classList.remove('hidden'); 
+            crisisMenu.style.display = 'flex';     // 危機選單用 flex 撐開全螢幕
+        }
     }
 }
 
-// 7.5 從一般個案介面返回分流首頁
+// 7.3 危機選單返回最頂層分流主頁
+function backToTriage() {
+    selectTriage('reset'); // 先調用中央清空
+    const triagePage = document.getElementById('triagePage');
+    if (triagePage) {
+        triagePage.classList.remove('hidden');
+        triagePage.style.display = 'flex';
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 7.5 從一般個案介面一鍵安全返回最頂層分流主頁
 function backToTriageFromGeneral() {
     const triagePage = document.getElementById('triagePage');
+    const crisisMenu = document.getElementById('crisisMainMenu');
+    const crisisDetail = document.getElementById('crisisDetailPage');
     const genHeader = document.getElementById('generalHeader');
     const genMain = document.getElementById('generalMain');
     
-    // 1. 顯示分流框架首頁
-    if (triagePage) triagePage.classList.remove('hidden');
+    // 一樣是先全體徹底關閉兩種隱藏模式，排除所有重複干擾
+    const allPages = [triagePage, crisisMenu, crisisDetail, genHeader, genMain];
+    allPages.forEach(page => {
+        if (page) {
+            page.classList.add('hidden');
+            page.style.display = 'none';
+        }
+    });
     
-    // 2. 隱藏一般個案的介面
-    if (genHeader) genHeader.classList.add('hidden');
-    if (genMain) genMain.classList.add('hidden');
+    // 【唯一放行】讓分流主頁在 class 和 style 層面同時活過來
+    if (triagePage) {
+        triagePage.classList.remove('hidden');
+        triagePage.style.display = 'flex';         // 確保分流主頁彈窗能 100% 秀出來
+    }
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-// 7.3 危機選單返回分流主頁
-function backToTriage() {
-    document.getElementById('crisisMainMenu').classList.add('hidden');
-    document.getElementById('crisisDetailPage').classList.add('hidden');
-    document.getElementById('triagePage').classList.remove('hidden');
 }
 
 // 7.4 進入特定危機內頁（支援綠、黃、紅燈全方位 Box 化渲染）
 function openCrisisDetail(crisisKey) {
-    document.getElementById('crisisMainMenu').classList.add('hidden');
+    // 進入危機內頁時，把危機主選單藏起來
+    if (document.getElementById('crisisMainMenu')) {
+        document.getElementById('crisisMainMenu').classList.add('hidden');
+    }
+    // 把危機詳細內頁秀出來
     const detailPage = document.getElementById('crisisDetailPage');
-    detailPage.classList.remove('hidden');
+    if (detailPage) detailPage.classList.remove('hidden');
+    
+    // ... 後續的渲染資料邏輯 ...
+
     
     if(crisisKey !== 'mental') {
         document.getElementById('crisisDetailContent').innerHTML = `
@@ -818,20 +844,6 @@ function openCrisisDetail(crisisKey) {
             </div>
         </div>
     `;
-}
-
-// 7.5 從一般個案介面返回分流首頁
-function backToTriageFromGeneral() {
-    // 1. 顯示分流框架首頁
-    const triagePage = document.getElementById('triagePage');
-    if (triagePage) triagePage.classList.remove('hidden');
-    
-    // 2. 隱藏一般個案的主內容和頂部欄
-    document.querySelector('header').classList.add('hidden');
-    document.querySelector('main').classList.add('hidden');
-    
-    // 貼心體驗：自動讓網頁捲回最上方
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function backToCrisisMenu() {
