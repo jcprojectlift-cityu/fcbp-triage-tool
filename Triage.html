@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FCBP 個案分流框架</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .active-tab {
+            border-bottom-width: 4px;
+            border-color: #2563eb;
+            color: #2563eb;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+
+<div id="disclaimerPage" class="fixed inset-0 bg-gray-900 z-[9999] flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] flex flex-col p-6">
+        
+        <div class="text-center pb-4 border-b border-gray-200">
+            <i class="fa-solid fa-triangle-exclamation text-amber-500 text-3xl mb-2"></i>
+            <h2 class="text-xl font-bold text-gray-800">系統使用免責聲明</h2>
+        </div>
+
+        <div class="flex-1 overflow-y-auto my-4 text-sm text-gray-600 space-y-3 pr-2 leading-relaxed">
+            <p class="font-semibold text-gray-800">各位 JC PROJECT LIFT 同工（FCBP）：</p>
+            <p>1. 此參考文件只作PROJECT LIFT內部使用，未經許可不得轉載。</p>
+            <p><strong>2. FCBP及其他PROJECT LIFT的持份者在使用此文件時必須謹慎，並需要有自己的判斷，而非單一地跟從此文件的建議事項工作。如有任何特殊或緊急情況，必須先與督導商討跟進對策。</strong></p>
+            <p>3. 本分流框架所載之社區資源、機構聯絡及工作方向僅供前線個案輔導與轉介時作內部參考之用，並不構成法律、醫療或專業心理治療之最終建議。</p>
+            <p>4. 外部機構之服務範疇、輪候時間及收費標準可能會隨時變更，同工在向街坊承諾或進行正式轉介前，請務必先向相關機構作進一步核實。</p>
+            <p>5. 請嚴格遵守個人資料（私隱）條例，切勿將街坊之敏感個人資料輸入於非加密之搜尋欄中，以保障個案私隱。</p>
+            <p>6. 點擊「同意及繼續」即代表你已閱讀、理解並同意遵守上述內部工作指引與聲明。</p>
+        </div>
+
+        <div class="pt-4 border-t border-gray-200">
+            <button onclick="acceptDisclaimer()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow transition duration-200 cursor-pointer text-center">
+                同意及繼續 <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<div id="triagePage" class="fixed inset-0 bg-gray-950 z-[9998] flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center">
+        
+        <div class="pb-4 border-b border-gray-200 mb-6">
+            <i class="fa-solid fa-diagram-project text-blue-600 text-3xl mb-2"></i>
+            <h2 class="text-xl font-bold text-gray-800">個案分流框架</h2>
+            <p class="text-xs text-gray-500 mt-1">請評估街坊目前面臨的狀況</p>
+        </div>
+
+        <div class="space-y-4">
+            
+            <button onclick="selectTriage('general')" class="w-full p-4 bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-xl flex items-center shadow-sm transition duration-200 cursor-pointer text-left">
+                <div class="bg-blue-500 text-white p-3 rounded-lg mr-4 shrink-0">
+                    <i class="fa-solid fa-folder-open text-xl w-6 text-center"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-blue-900 text-base">一般個案類型</h3>
+                    <p class="text-xs text-blue-700 mt-0.5">喪親家庭、照顧者、賭博、工傷等社區指引</p>
+                </div>
+            </button>
+
+            <button onclick="selectTriage('crisis')" class="w-full p-4 bg-red-50 hover:bg-red-100 border-2 border-red-200 rounded-xl flex items-center shadow-sm transition duration-200 cursor-pointer text-left">
+                <div class="bg-red-500 text-white p-3 rounded-lg mr-4 shrink-0">
+                    <i class="fa-solid fa-triangle-exclamation text-xl w-6 text-center"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-red-900 text-base">危機個案狀況</h3>
+                    <p class="text-xs text-red-700 mt-0.5">涉及精神或情緒問題、自殺或傷害自己、家庭暴力或物質濫用事件</p>
+                </div>
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="crisisMainMenu" class="fixed inset-0 bg-gray-100 z-[9990] flex flex-col hidden overflow-y-auto">
+    <header class="bg-red-600 text-white p-4 shadow-md sticky top-0 flex items-center gap-3">
+        <button onclick="backToTriage()" class="text-white hover:text-red-200 cursor-pointer text-lg"><i class="fa-solid fa-chevron-left"></i></button>
+        <h1 class="text-lg font-bold">危機個案狀況 (5大範疇)</h1>
+    </header>
+    <main class="max-w-md w-full mx-auto p-4 space-y-3 pb-12">
+        <div class="bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-xs text-yellow-800 font-medium mb-2">
+            <i class="fa-solid fa-circle-info mr-1"></i> 請點擊下方個案類別，查閱基本理解、風險辨識與燈號分流指引。
+        </div>
+        
+        <button onclick="openCrisisDetail('mental')" class="w-full p-4 bg-white hover:bg-red-50 border-l-4 border-red-500 rounded-lg shadow-sm flex justify-between items-center cursor-pointer text-left">
+            <div>
+                <h3 class="font-bold text-gray-800 text-base">🧠 精神或情緒問題</h3>
+                <p class="text-xs text-gray-500 mt-0.5">幻覺妄想、現實脫節、日常功能喪失評估</p>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-300"></i>
+        </button>
+
+        <button onclick="openCrisisDetail('suicide')" class="w-full p-4 bg-white opacity-60 hover:bg-gray-50 border-l-4 border-gray-400 rounded-lg shadow-sm flex justify-between items-center cursor-pointer text-left">
+            <div>
+                <h3 class="font-bold text-gray-700 text-base">🕯️ 自殺或傷害自己</h3>
+                <p class="text-xs text-gray-400 mt-0.5">(模組規劃中)</p>
+            </div>
+            <i class="fa-solid fa-lock text-gray-300"></i>
+        </button>
+
+        <button onclick="openCrisisDetail('dv')" class="w-full p-4 bg-white opacity-60 hover:bg-gray-50 border-l-4 border-gray-400 rounded-lg shadow-sm flex justify-between items-center cursor-pointer text-left">
+            <div>
+                <h3 class="font-bold text-gray-700 text-base">🏠 親密伴侶暴力 (家暴)</h3>
+                <p class="text-xs text-gray-400 mt-0.5">(模組規劃中)</p>
+            </div>
+            <i class="fa-solid fa-lock text-gray-300"></i>
+        </button>
+
+        <button onclick="openCrisisDetail('child')" class="w-full p-4 bg-white opacity-60 hover:bg-gray-50 border-l-4 border-gray-400 rounded-lg shadow-sm flex justify-between items-center cursor-pointer text-left">
+            <div>
+                <h3 class="font-bold text-gray-700 text-base">🛡️ 虐待兒童個案</h3>
+                <p class="text-xs text-gray-400 mt-0.5">(模組規劃中)</p>
+            </div>
+            <i class="fa-solid fa-lock text-gray-300"></i>
+        </button>
+
+        <button onclick="openCrisisDetail('abuse')" class="w-full p-4 bg-white opacity-60 hover:bg-gray-50 border-l-4 border-gray-400 rounded-lg shadow-sm flex justify-between items-center cursor-pointer text-left">
+            <div>
+                <h3 class="font-bold text-gray-700 text-base">🍾 物質濫用問題</h3>
+                <p class="text-xs text-gray-400 mt-0.5">(模組規劃中)</p>
+            </div>
+            <i class="fa-solid fa-lock text-gray-300"></i>
+        </button>
+    </main>
+</div>
+
+<div id="crisisDetailPage" class="fixed inset-0 bg-gray-100 z-[9991] flex flex-col hidden overflow-y-auto">
+    <header class="bg-slate-800 text-white p-4 shadow-md sticky top-0 flex items-center gap-3">
+        <button onclick="backToCrisisMenu()" class="text-white hover:text-slate-300 cursor-pointer text-lg"><i class="fa-solid fa-chevron-left"></i></button>
+        <h1 class="text-lg font-bold">🧠 精神或情緒問題指引</h1>
+    </header>
+    <main id="crisisDetailContent" class="max-w-md w-full mx-auto p-4 pb-20">
+        </main>
+</div>
+
+<header id="generalHeader"class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+        <button onclick="backToTriageFromGeneral()" class="text-white hover:text-blue-200 cursor-pointer text-lg mr-3">
+            <i class="fa-solid fa-house"></i>
+        </button>
+        
+        <h1 class="text-xl font-bold flex-1"><i class="fa-solid fa-hands-holding-child mr-1"></i>FCBP 隨身工具包</h1>
+        <span class="text-xs bg-blue-700 px-2 py-1 rounded shrink-0">v1.0</span>
+    </div>
+</header>
+
+    <main id="generalMain" class="max-w-md mx-auto p-4 pb-24">
+        
+        <div class="mb-4 relative">
+            <input type="text" id="searchInput" oninput="handleSearch()" placeholder="搜尋關鍵字（如：喪禮、津貼、SEN）..." 
+                class="w-full p-3 pl-10 rounded-lg border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <i class="fa-solid fa-search text-gray-400 absolute left-3 top-4"></i>
+        </div>
+
+        <div id="searchResults" class="hidden mb-4 bg-yellow-50 border border-yellow-200 p-3 rounded-lg shadow-sm">
+            <h3 class="text-sm font-bold text-yellow-800 mb-2"><i class="fa-solid fa-eye mr-1"></i> 搜尋結果：</h3>
+            <ul id="searchList" class="space-y-2 text-sm text-gray-700"></ul>
+        </div>
+
+        <section class="grid grid-cols-2 gap-2 mb-6">
+            <button onclick="switchCategory('bereavement')" id="btn-bereavement" class="cat-btn p-3 bg-white rounded-lg shadow-sm text-left border-l-4 border-amber-500 font-medium text-gray-800 hover:bg-gray-50">
+                <i class="fa-solid fa-ribbon text-amber-500 mr-1"></i> 喪親家庭
+            </button>
+            <button onclick="switchCategory('carer')" id="btn-carer" class="cat-btn p-3 bg-white rounded-lg shadow-sm text-left border-l-4 border-sky-500 font-medium text-gray-800 hover:bg-gray-50">
+                <i class="fa-solid fa-wheelchair text-sky-500 mr-1"></i> 有照顧需要家庭
+            </button>
+            <button onclick="switchCategory('gambling')" id="btn-gambling" class="cat-btn p-3 bg-white rounded-lg shadow-sm text-left border-l-4 border-purple-500 font-medium text-gray-800 hover:bg-gray-50">
+                <i class="fa-solid fa-dice text-purple-500 mr-1"></i> 賭博問題
+            </button>
+            <button onclick="switchCategory('injury')" id="btn-injury" class="cat-btn p-3 bg-white rounded-lg shadow-sm text-left border-l-4 border-green-500 font-medium text-gray-800 hover:bg-gray-50">
+                <i class="fa-solid fa-user-injured text-green-500 mr-1"></i> 工傷個案
+            </button>
+        </section>
+
+        <div class="bg-white p-3 rounded-t-lg border-b border-gray-200 shadow-sm flex justify-between items-center">
+            <h2 id="currentCategoryTitle" class="text-lg font-bold text-gray-800">喪親家庭</h2>
+            <span id="categoryBadge" class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-semibold">喪親</span>
+        </div>
+
+        <div class="bg-white flex shadow-sm mb-4 border-b border-gray-200">
+            <button onclick="switchTab('direction')" id="tab-direction" class="tab-btn flex-1 py-3 text-center text-sm font-medium text-gray-500 active-tab">
+                <i class="fa-solid fa-compass block mb-1"></i> 工作方向
+            </button>
+            <button onclick="switchTab('needs')" id="tab-needs" class="tab-btn flex-1 py-3 text-center text-sm font-medium text-gray-500">
+                <i class="fa-solid fa-clipboard-list block mb-1"></i> 街坊需要
+            </button>
+            <button onclick="switchTab('resources')" id="tab-resources" class="tab-btn flex-1 py-3 text-center text-sm font-medium text-gray-500">
+                <i class="fa-solid fa-link block mb-1"></i> 外界資源
+            </button>
+        </div>
+
+        <div class="bg-white p-4 rounded-b-lg shadow-sm min-h-[300px]">
+            <div id="contentList" class="space-y-4">
+                </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 text-center text-xs py-3 fixed bottom-0 left-0 right-0 max-w-md mx-auto">
+        JC PROJECT LIFT — 前線個案指引工具<br>
+        最後更新日期：2026年06月12日
+    </footer>
+
+    <script>
+        // 1. 資料庫定義 (根據你的圖表整理)
+        const appData = {
+            bereavement: {
+                title: "喪親家庭",
+                color: "amber",
+                direction: [
+                    "在剛發生喪親事件的階段，FCBP可了解街坊的實質需要（經濟、喪禮支援）並在合適情況下轉介或介紹相關服務給街坊。",
+                    "視乎街坊的復原狀況，如街坊需要重新進入勞動市場，可考慮運用 LuEEC, CBF 等支援及預備街坊重返職場。",
+                    "如街坊出現情緒問題，可以考慮運用 CBF 協助街坊接受輔導服務或精神科服務，以改善其身心健康狀況。",
+                    "不期望 FCBP 做哀傷輔導，但仍然可以定時關心家庭的狀況及實際需要，適時提供陪伴性質的支援。",
+                    "如街坊願意，邀請他們參與社房的活動，讓街坊可以維持日常生活及社區連繫，FCBP也能夠觀察他們的情況。"
+                ],
+                needs: [
+                    "喪禮的安排 — 街坊或許不懂得如何安排喪禮",
+                    "緊急經濟援助 — 如失去經濟支柱將面對經濟困難",
+                    "哀傷輔導 — 街坊會面對喪親的情緒反應及陪伴"
+                ],
+                resources: [
+    { 
+        name: "護慰天使 (哀傷支援服務)", 
+        detail: "提供殯儀諮詢及治喪陪伴，以及個別輔導服務或同路人小組等",
+        url: "https://www.skhwc.org.hk/zh-hant/services/hospice-care/#paraclete-care-comfort-angel" // 👈 新增這行網址
+    },
+    { 
+        name: "「生命頌」基層殯儀服務計劃", 
+        detail: "一切從兼 - 殯儀社企 / 毋忘愛",
+        url: "https://www.forgettheenot.org.hk/funeral-support-2/" 
+    },
+    { 
+        name: "仁濟醫院緊急援助基金", 
+        detail: "提供緊急經濟援助",
+        url: "https://www.yanchai.org.hk/services/charity-fund/yan-chai-emergency-assistance-relief-fund" // 👈 如果有些機構沒有網站，留空即可
+    },
+    // ... 其他機構以此類推
+]
+            },
+            carer: {
+                title: "有照顧需要的家庭",
+                color: "sky",
+                direction: [
+                    "提供情緒支援予街坊應付照顧上的壓力。",
+                    "嘗試了解照顧者與被照顧者的狀況，是否可以安排街坊接受照顧者的支援服務，以減輕照顧壓力，甚或進一步騰出時間作自我照顧及提升能力。",
+                    "如若能夠減輕照顧者的照顧時間，可以考慮為街坊制定 CBP。",
+                    "協助街坊了解不同的社區資源，如長者或殘疾人士可了解是否已輪候政府的長期護理服務，是否已合資格可申請照顧者津貼。如沒有，則可鼓勵街坊到相關機構接受評估以輪候服務。",
+                    "與街坊探索使用 CBF-E1 的可能性以提升其家庭能力。",
+                    "促進家庭探討家庭角色分工（例如：照顧兒童或長者的分工等）。"
+                ],
+                needs: [
+                    "嚴重疾病/中風家庭：癌症病人的需要及支援、長期病患的院後支援",
+                    "有殘疾人士家庭：照顧者的支援（陪診、送飯等）、住宿照顧",
+                    "長者家庭：長者社區支援（陪診、送飯等）、長者住宿照顧",
+                    "兒童特殊學習需要(SEN)：照顧有特殊學習需要兒童、課餘託管及功課輔導"
+                ],
+                resources: [
+                    { name: "香港癌症基金會", detail: "經濟援助、訂購營養奶粉、護士諮詢、輔導服務" },
+                    { name: "醫院管理局", detail: "離院支援服務" },
+                    { name: "殘疾人士地區支援中心", detail: "可按需要進行評估以輪候資助服務（住宿照顧、庇護工場等）" },
+                    { name: "長者地區中心 / 鄰舍中心", detail: "需要評估及輪候支援服務（綜合家居照顧服務、長者日間護理、暫託服務、買位/院舍服務）" },
+                    { name: "特殊幼兒服務 / 政府評估中心 (CAC)", detail: "S位-特殊幼兒中心；E位-早期訓練中心；I位-兼收計劃；O位-到校學前康復服務" },
+                    { name: "社署轄下日間兒童照顧服務", detail: "幼兒中心服務、學前兒童課餘託管、小學生課餘託管、鄰里支援幼兒照顧計劃" }
+                ]
+            },
+            gambling: {
+                title: "賭博問題",
+                color: "purple",
+                direction: [
+                    "避免批判、說教、過急要求戒賭，用心聆聽賭博背後的新需要，建立信任關係，按意願導向接受戒賭服務。",
+                    "如街坊願意處理沉迷賭博問題，可一同訂立目標及小行動。",
+                    "與街坊探索使用 CBF-E1 的可能性，如尋找有益身心的替代活動。"
+                ],
+                needs: [
+                    "戒賭支援服務 — 街坊與家人需要輔導支援"
+                ],
+                resources: [
+                    { name: "平和坊 (東華三院)", detail: "問題賭博輔導及治療中心 — 提供輔導支援予沉迷賭博人士及其家人" },
+                    { name: "路德會青亮中心 / 明愛展晴中心", detail: "戒賭輔導服務" },
+                    { name: "錫安社會服務處勵顧輔導中心 / Smart i-Change (ELCHK)", detail: "賭博輔導服務" }
+                ]
+            },
+            injury: {
+                title: "工傷個案",
+                color: "green",
+                direction: [
+                    "了解街坊現階段在工傷後的情緒狀況及接受程度。",
+                    "如街坊不太了解自身權益，可提供資訊或向工業傷亡權益會查詢。",
+                    "如街坊需要支援以做物理治療而協助日後在不同程度下重返職場或生活，可考慮運用 CBF 協助街坊接受合適服務。",
+                    "針對有計劃重返職場的街坊，可考慮配合 LuEEC 的就業支援服務，以協助街坊制定日後重返職場的計劃。"
+                ],
+                needs: [
+                    "工傷權益安排 — 街坊需要知道自己的權益",
+                    "個人身體復原 — 從受傷當中康復",
+                    "個人生活復原 — 重新計劃未來生活"
+                ],
+                resources: [
+                    { name: "工業傷亡權益會", detail: "工業傷亡個案跟進 / 情緒輔導服務" },
+                    { name: "CBF Vendor List 物理治療", detail: "痛症或其他物理治療服務等" }
+                ]
+            }
+        };
+
+        // 當前狀態變數
+        let currentCategory = 'bereavement';
+        let currentTab = 'direction';
+
+        // 2. 切換個案類型
+        function switchCategory(catKey) {
+            currentCategory = catKey;
+            const cat = appData[catKey];
+            
+            // 更新標題與 Badge
+            document.getElementById('currentCategoryTitle').innerText = cat.title;
+            const badge = document.getElementById('categoryBadge');
+            badge.innerText = cat.title.replace("問題", "").replace("個案", "");
+            
+            // 更新動態顏色樣式
+            badge.className = `text-xs bg-${cat.color}-100 text-${cat.color}-800 px-2 py-0.5 rounded-full font-semibold`;
+            
+            // 更新按鈕高亮狀態
+            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50'));
+            document.getElementById(`btn-${catKey}`).classList.add('ring-2', 'ring-blue-500', 'bg-blue-50');
+            
+            renderContent();
+        }
+
+        // 3. 切換分頁 (Tabs)
+        function switchTab(tabKey) {
+            currentTab = tabKey;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab'));
+            document.getElementById(`tab-${tabKey}`).classList.add('active-tab');
+            renderContent();
+        }
+
+        // 4. 渲染內容清單
+        function renderContent() {
+            const container = document.getElementById('contentList');
+            container.innerHTML = ''; // 清空內容
+            
+            const data = appData[currentCategory][currentTab];
+            
+            if (currentTab === 'direction') {
+                // 工作方向：Checkbox 清單
+                data.forEach((item, index) => {
+                    container.innerHTML += `
+                        <div class="flex items-start bg-gray-50 p-3 rounded border border-gray-100">
+                            <input type="checkbox" id="check-${index}" class="mt-1 mr-3 w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                            <label for="check-${index}" class="text-gray-700 text-sm leading-relaxed">${item}</label>
+                        </div>
+                    `;
+                });
+            } else if (currentTab === 'needs') {
+                // 街坊需要：條列式卡片
+                data.forEach(item => {
+                    container.innerHTML += `
+                        <div class="p-3 bg-red-50 border-l-4 border-red-400 rounded-r text-sm text-gray-700 font-medium">
+                            <i class="fa-solid fa-circle-exclamation text-red-500 mr-2"></i>${item}
+                        </div>
+                    `;
+                });
+            } else if (currentTab === 'resources') {
+                // 外界資源：帶有複製功能與官網連結的卡片
+                data.forEach(item => {
+                     // 預設建立「複製」按鈕
+                      let buttonsHtml = `
+                        <button onclick="copyToClipboard('${item.name}：${item.detail}')" class="text-xs bg-white text-gray-500 border border-gray-300 px-2 py-1 rounded hover:bg-gray-100 cursor-pointer">
+                         <i class="fa-regular fa-copy"></i> 複製
+                         </button>
+                    `;
+
+                     // 👈 核心修改：檢查有沒有 url，有的話就額外加上「官網」超連結按鈕
+                    if (item.url && item.url !== "") {
+                        buttonsHtml += `
+                            <a href="${item.url}" target="_blank" class="text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2 py-1 rounded hover:bg-blue-100 font-medium">
+                                <i class="fa-solid fa-earth-asia"></i> 官網
+                            </a>
+                        `;
+                    }
+
+                  container.innerHTML += `
+                        <div class="p-3 bg-green-50 border border-green-200 rounded shadow-sm">
+                            <div class="flex justify-between items-start gap-2">
+                                <h4 class="font-bold text-green-900 text-sm flex-1"><i class="fa-solid fa-house-medical mr-1"></i> ${item.name}</h4>
+                                <div class="flex gap-1 shrink-0">
+                                    ${buttonsHtml}
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-600 mt-1">${item.detail}</p>
+                        </div>
+                    `;
+                 });
+}
+        }
+
+        // 5. 複製文字功能
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('已複製服務資源資訊，可直接貼給街坊！');
+            });
+        }
+
+        // 6. 全局關鍵字搜尋功能
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            const searchList = document.getElementById('searchList');
+            
+            if (!query) {
+                resultsDiv.classList.add('hidden');
+                return;
+            }
+            
+            searchList.innerHTML = '';
+            let hasResults = false;
+
+            // 遍歷所有資料搜尋
+            Object.keys(appData).forEach(catKey => {
+                const cat = appData[catKey];
+                
+                // 搜尋外界資源名稱或細節
+                    cat.resources.forEach(res => {
+                        if (res.name.toLowerCase().includes(query) || res.detail.toLowerCase().includes(query)) {
+                            hasResults = true;
+                            
+                            // 👈 同樣判斷是否有網址
+                            let linkHtml = `<strong class="text-blue-700 cursor-pointer" onclick="goToCategory('${catKey}', 'resources')">${res.name}</strong>`;
+                            if (res.url && res.url !== "") {
+                                linkHtml += ` <a href="${res.url}" target="_blank" class="text-xs text-blue-500 underline ml-1"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>`;
+                            }
+
+                            searchList.innerHTML += `
+                                <li class="border-b border-yellow-200 pb-1">
+                                    <span class="text-xs bg-gray-200 px-1 rounded text-gray-600 mr-1">[${cat.title}]</span>
+                                    ${linkHtml} - ${res.detail}
+                                </li>
+                            `;
+                        }
+                    });
+
+                // 搜尋需要
+                cat.needs.forEach(need => {
+                    if (need.toLowerCase().includes(query)) {
+                        hasResults = true;
+                        searchList.innerHTML += `
+                            <li class="border-b border-yellow-200 pb-1">
+                                <span class="text-xs bg-gray-200 px-1 rounded text-gray-600 mr-1">[${cat.title}]</span>
+                                <span class="cursor-pointer text-gray-800" onclick="goToCategory('${catKey}', 'needs')">${need}</span>
+                            </li>
+                        `;
+                    }
+                });
+            });
+
+            if (hasResults) {
+                resultsDiv.classList.remove('hidden');
+            } else {
+                searchList.innerHTML = '<li class="text-gray-500 italic">找不到相關資源或指引。</li>';
+                resultsDiv.classList.remove('hidden');
+            }
+        }
+
+        // 搜尋結果的跳轉快捷鍵
+        function goToCategory(catKey, tabKey) {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').classList.add('hidden');
+            switchCategory(catKey);
+            switchTab(tabKey);
+        }
+
+        // 初始化：一開始先隱藏一般個案介面，等分流選擇後才開啟
+        if (document.getElementById('generalHeader')) document.getElementById('generalHeader').classList.add('hidden');
+        if (document.getElementById('generalMain')) document.getElementById('generalMain').classList.add('hidden');
+
+        switchCategory('bereavement');
+
+        // 7. 免責聲明控制邏輯
+            // 當點擊「同意及繼續」時觸散
+        function acceptDisclaimer() {
+            // 隱藏免責聲明頁面
+            document.getElementById('disclaimerPage').classList.add('hidden');
+            
+            // 👈 核心修改：顯示「個案分流框架」頁面
+            document.getElementById('triagePage').classList.remove('hidden');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+     // 7.1 危機個案資料庫（紅燈個案狀況完全 Box 化更新）
+const crisisData = {
+    mental: {
+        title: "精神或情緒問題",
+        concept: [
+            "<strong>已知診斷：</strong>如已知街坊有精神分裂症等嚴重精神病情況，但不等於有診斷就是高危。相反地若街坊沒有任何病史，但卻出現以下風險條件，則需要進一步注意，所以要衡量其服藥習慣及以下各項風險條件。",
+            "<strong>持續性：</strong>街坊的情緒或精神狀況或其表徵是一次性 (One-off) 或是持續出現，均會影響我們評估相關個案的風險程度。"
+        ],
+        preReferral: [
+            "如街坊有明顯的精神紊亂或情緒低落等狀況，在可行情況下建議與<strong>街坊先行探討其對自己精神狀況的了解及病識感</strong>。",
+            "FCBP可以<strong>收集街坊的精神狀況</strong>，於轉介ICCMW或其他服務時可能需要向轉介機構提供相關資料，以便有效作出轉介。",
+            "<strong>高病識感的街坊：</strong>可在取得同意下轉介接受社區服務，甚或使用CBF到私家診所接受精神科醫生的診治。",
+            "<strong>相對地低病識感街坊：</strong>可能需要取得家屬同意轉介ICCMW，又或是建議先以其身體健康狀況介入（失眠、心跳加速等）以便進一步鼓勵街坊接受醫療服務。"
+        ],
+        risks: [
+            { title: "現實感知", desc: "<strong>現實脫節：</strong>出現幻覺（如聽到不存在的聲音）、妄想（如堅信被監視或被害）。" },
+            { title: "思考邏輯", desc: "<strong>思考紊亂：</strong>言語支離破碎、思想跳躍、難以理解的怪異信念。" },
+            { title: "日常生活", desc: "<strong>功能喪失：</strong>嚴重疏於個人衛生、無法工作、斷絕所有社交、無法處理簡單事務。" },
+            { title: "病識感", desc: "<strong>缺乏病識感：</strong>抗拒承認患病，或拒絕接受醫療介入。" }
+        ],
+        triage: {
+            green: {
+                label: "綠燈個案狀況",
+                examples: [
+                    "有被診斷重症精神病，但現實感知良好，沒有幻覺妄想，病識感強，有穩定服藥習慣，沒有影響日常生活。",
+                    "情緒問題未致於影響日常生活，可能只有影響心情。"
+                ],
+                actions: [
+                    "<strong>促導街坊：</strong>持續接受醫療支援（如是精神病康復者）、傾聽街坊日常生活的需要、協助街坊面對日常生活、社交及/或工作上的各種需要及疑難、鼓勵情況相對穩定的街坊參與社房活動，建立關係。",
+                    "<strong>社房活動：</strong>於社房舉辦一些健康身心活動（靜觀、放鬆身心的班組、表達藝術治療小組等）。"
+                ],
+                support: [
+                    { name: "Shall We Talk 網站", detail: "提供精神健康相關的網站、APP 或熱線予街坊參考" },
+                    { name: "綜合家庭服務中心", detail: "如有進一步輔導需要，可以嘗試在街坊同意下轉介其接受輔導服務" }
+                ]
+            },
+            yellow: {
+                label: "黃燈個案狀況",
+                examples: [
+                    "病識感弱，但願意承認自己有情緒狀況或身體狀況（如難以入睡，心跳加速等）。",
+                    "尚未出現幻覺、妄想等情況，但明顯較為敏感，有警戒心。",
+                    "日常功能還可，但缺乏動力。"
+                ],
+                actions: [
+                    "<strong>需要進行持續評估：</strong>在日常與街坊接触時，可留意他/她的情緒狀況及反應，當察覺有異樣時可以立即跟進。",
+                    "<strong>情緒調節：</strong>提供基礎情緒支援（如：深呼吸練習、積極傾聽），舒緩街坊當下壓力。如街坊動力較高而又合適，可一同制定一些改善身心靈的計劃（睡眠、靜觀等）。",
+                    "<strong>醫療跟進：</strong>嘗試了解街坊接受精神科服務的看法及意願，必要時可以先跟街坊說看醫生處理失眠、心跳等生理狀況，並在可行情況下陪同看醫生，增加街坊的安全感。"
+                ],
+                support: [
+                    { name: "CBF 資助睇醫生", detail: "可在可行情況下陪同看醫生，增加街坊的安全感。考慮使用 CBF 資助街坊看醫生。" },
+                    { name: "精神健康綜合社區中心 (ICCMW)", detail: "不一定要所有人同意，有家人屬同意也可接受轉介，但需要具體表示個案所呈現的類似情緒或精神狀況。" },
+                    { name: "普通科門診 / 私家醫生", detail: "安排普通科門診或私家醫生（可以考慮使用 CBF）。" },
+                    { name: "港大心理服務組", detail: "如個案願意接受心理學家輔導，而又有經濟考慮，可建議使用港大心理服務組的服務。" }
+                ]
+            },
+            // 👉 核心 Box 化修改：紅燈介入與轉介支援全面拆分
+            red: {
+                label: "紅燈個案狀況",
+                examples: [
+                    "有出現幻覺、妄想，疑神疑鬼。",
+                    "對話不合邏輯，問非所答。",
+                    "日常生活功能完全喪失，缺乏動力，無法工作，甚至有輕生念頭及行動。",
+                    "病識感弱，堅拒承認自己有情緒問題。",
+                    "<strong>自傷或傷人意圖/行為。</strong>"
+                ],
+                // 紅燈核心安全應急原則
+                actions: [
+                    "<strong>通報與評估：</strong>通報上司或督導以視情況衡量尋找專業支援服務。如街坊已出現嚴重的幻覺、妄想等表徵，建議先第一時間評估其安全（例如：同住家人的支援及安全風險）。",
+                    "<strong>安全為大前提：</strong>在任何情況下需要先以個人安全為大前提，如在單獨會面時發現此等情況，建議在可行情況下尋找同事支援（甚至乎在可行情況下避免單獨進行探訪）。",
+                    "<strong>緊急介入：</strong>如街坊有表示強烈意願及行動去傷害別人或自己，通報上司或督導以視情況衡量適合的專業應急介入。"
+                ],
+                // 👇 新增紅燈獨立 Box 化轉介支援資源
+                support: [
+                    { name: "🚨 醫院急症室服務 (A&E)", detail: "急症室設有觀察病房，並可以安排精神科護士或醫生評估個案情況，<strong>必要時可以強制病人入院</strong>接受治療。" },
+                    { name: "🏥 精神健康綜合社區中心 (ICCMW)", detail: "對有幻覺、妄想等個案，而又<strong>未有</strong>即時傷害自己或其他人類頭/行為的病人，可馬上轉介 ICCMW 緊密跟進。" }
+                ]
+            }
+        },
+        aftercare: [
+            "在可行的情况下，與轉介機構保持溝通與合作，例如：可持續觀察街坊在社房的情況，並適時與轉介機構同工交流。在處理嚴重精神病個案時，在特殊需要情況下甚至乎可以與精神科社區康復護士聯繫，以加強對街坊的支援。",
+            "如情況許可，可以鼓勵情況相對穩定的街坊參與社房活動，建立關係（需要考慮個案意願）。"
+        ]
+    }
+};
+
+// 7.2 修改分流控制邏輯（改用固定 ID 控制，徹底防卡死）
+function selectTriage(type) {
+    const triagePage = document.getElementById('triagePage');
+    const crisisMenu = document.getElementById('crisisMainMenu');
+    const genHeader = document.getElementById('generalHeader');
+    const genMain = document.getElementById('generalMain');
+    
+    if (type === 'general') {
+        // 進入一般個案：隱藏分流首頁與危機選單
+        if (triagePage) triagePage.classList.add('hidden');
+        if (crisisMenu) crisisMenu.classList.add('hidden');
+        
+        // 顯示一般個案的主介面
+        if (genHeader) genHeader.classList.remove('hidden');
+        if (genMain) genMain.classList.remove('hidden');
+        
+        switchCategory('bereavement');
+        
+    } else if (type === 'crisis') {
+        // 進入危機個案：隱藏分流首頁
+        if (triagePage) triagePage.classList.add('hidden');
+        
+        // 隱藏一般個案的主介面（如果它們存在的話）
+        if (genHeader) genHeader.classList.add('hidden');
+        if (genMain) genMain.classList.add('hidden');
+        
+        // 顯示危機主選單
+        if (crisisMenu) crisisMenu.classList.remove('hidden');
+    }
+}
+
+// 7.5 從一般個案介面返回分流首頁
+function backToTriageFromGeneral() {
+    const triagePage = document.getElementById('triagePage');
+    const genHeader = document.getElementById('generalHeader');
+    const genMain = document.getElementById('generalMain');
+    
+    // 1. 顯示分流框架首頁
+    if (triagePage) triagePage.classList.remove('hidden');
+    
+    // 2. 隱藏一般個案的介面
+    if (genHeader) genHeader.classList.add('hidden');
+    if (genMain) genMain.classList.add('hidden');
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+// 7.3 危機選單返回分流主頁
+function backToTriage() {
+    document.getElementById('crisisMainMenu').classList.add('hidden');
+    document.getElementById('crisisDetailPage').classList.add('hidden');
+    document.getElementById('triagePage').classList.remove('hidden');
+}
+
+// 7.4 進入特定危機內頁（支援綠、黃、紅燈全方位 Box 化渲染）
+function openCrisisDetail(crisisKey) {
+    document.getElementById('crisisMainMenu').classList.add('hidden');
+    const detailPage = document.getElementById('crisisDetailPage');
+    detailPage.classList.remove('hidden');
+    
+    if(crisisKey !== 'mental') {
+        document.getElementById('crisisDetailContent').innerHTML = `
+            <div class="p-8 text-center text-gray-500 italic bg-white rounded-xl shadow-sm">
+                <i class="fa-solid fa-screwdriver-wrench text-4xl text-gray-300 mb-2"></i>
+                <p>該危機模組（內容指引）正在規劃中，未來可陸續擴充。</p>
+                <button onclick="backToCrisisMenu()" class="mt-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-xs font-medium">返回危機選單</button>
+            </div>`;
+        return;
+    }
+    
+    const data = crisisData.mental;
+    
+    // 1. 建立基本概念 HTML
+    let conceptHtml = '<ul class="space-y-2 text-xs text-gray-700">';
+    data.concept.forEach(c => conceptHtml += `<li class="bg-slate-50 p-3 rounded border-l-4 border-slate-400 leading-relaxed">${c}</li>`);
+    conceptHtml += '</ul>';
+    
+    // 2. 建立轉介前預備 HTML
+    let preReferralHtml = '<ul class="space-y-2 text-xs text-gray-700">';
+    data.preReferral.forEach(p => preReferralHtml += `<li class="bg-blue-50 p-3 rounded border-l-4 border-blue-400 leading-relaxed">${p}</li>`);
+    preReferralHtml += '</ul>';
+    
+    // 3. 建立風險評估 HTML
+    let riskHtml = '<div class="grid grid-cols-1 gap-2">';
+    data.risks.forEach(r => {
+        riskHtml += `
+            <div class="p-3 bg-stone-50 border border-stone-200 rounded flex gap-3">
+                <span class="bg-stone-600 text-white font-bold text-[11px] px-2 py-0.5 rounded h-fit shrink-0">${r.title}</span>
+                <p class="text-xs text-gray-600 leading-relaxed">${r.desc}</p>
+            </div>`;
+    });
+    riskHtml += '</div>';
+
+    // 4. 建立三色燈號 Box 化 HTML
+    
+    // 綠燈 Box 渲染
+    let greenSupportHtml = '<div class="grid grid-cols-1 gap-2 mt-2">';
+    data.triage.green.support.forEach(s => {
+        greenSupportHtml += `
+            <div class="p-2.5 bg-green-50/60 border border-green-200 rounded-lg">
+                <h4 class="font-bold text-green-900 text-xs flex items-center gap-1.5">
+                    <i class="fa-solid fa-square-rss text-green-600"></i> ${s.name}
+                </h4>
+                <p class="text-[11px] text-green-800 mt-0.5 leading-relaxed">${s.detail}</p>
+            </div>`;
+    });
+    greenSupportHtml += '</div>';
+
+    // 黃燈 Box 渲染
+    let yellowSupportHtml = '<div class="grid grid-cols-1 gap-2 mt-2">';
+    data.triage.yellow.support.forEach(s => {
+        yellowSupportHtml += `
+            <div class="p-2.5 bg-yellow-50/60 border border-yellow-200 rounded-lg">
+                <h4 class="font-bold text-yellow-900 text-xs flex items-center gap-1.5">
+                    <i class="fa-solid fa-hand-holding-hand text-yellow-600"></i> ${s.name}
+                </h4>
+                <p class="text-[11px] text-yellow-800 mt-0.5 leading-relaxed">${s.detail}</p>
+            </div>`;
+    });
+    yellowSupportHtml += '</div>';
+
+    // 🔴 紅燈 Box 渲染 (新增高危警示樣式)
+    let redSupportHtml = '<div class="grid grid-cols-1 gap-2 mt-2">';
+    data.triage.red.support.forEach(s => {
+        redSupportHtml += `
+            <div class="p-2.5 bg-red-50 border border-red-200 rounded-lg shadow-sm">
+                <h4 class="font-bold text-red-900 text-xs flex items-center gap-1.5">
+                    <i class="fa-solid fa-shield-halved text-red-600 animate-pulse"></i> ${s.name}
+                </h4>
+                <p class="text-[11px] text-red-800 mt-0.5 leading-relaxed font-medium">${s.detail}</p>
+            </div>`;
+    });
+    redSupportHtml += '</div>';
+
+    let triageHtml = `
+        <div class="space-y-4">
+            <div class="border border-green-500 rounded-xl overflow-hidden shadow-sm bg-white">
+                <div class="bg-green-600 text-white p-2.5 font-bold text-xs flex justify-between items-center">
+                    <span><i class="fa-solid fa-circle-check mr-1"></i> ${data.triage.green.label}</span>
+                    <span class="text-[10px] bg-green-700 px-2 py-0.5 rounded">低風險 / 穩定</span>
+                </div>
+                <div class="p-3 space-y-3">
+                    <div class="text-xs text-gray-600">
+                        <strong>📌 個案例子：</strong>
+                        <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.green.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
+                    </div>
+                    <div class="text-xs text-gray-600 border-t border-gray-100 pt-2">
+                        <strong>🛠️ 可行的介入手法例子：</strong>
+                        <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.green.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
+                    </div>
+                    <div class="border-t border-gray-100 pt-2">
+                        <strong class="text-xs text-gray-700">🔗 可行的轉介支援服務：</strong>
+                        ${greenSupportHtml}
+                    </div>
+                </div>
+            </div>
+
+            <div class="border border-yellow-500 rounded-xl overflow-hidden shadow-sm bg-white">
+                <div class="bg-yellow-500 text-white p-2.5 font-bold text-xs flex justify-between items-center">
+                    <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> ${data.triage.yellow.label}</span>
+                    <span class="text-[10px] bg-yellow-600 px-2 py-0.5 rounded">中風險 / 警覺</span>
+                </div>
+                <div class="p-3 space-y-3">
+                    <div class="text-xs text-gray-600">
+                        <strong>📌 個案例子：</strong>
+                        <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.yellow.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
+                    </div>
+                    <div class="text-xs text-gray-600 border-t border-gray-100 pt-2">
+                        <strong>🛠️ 可行的介入手法：</strong>
+                        <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.yellow.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
+                    </div>
+                    <div class="border-t border-gray-100 pt-2">
+                        <strong class="text-xs text-gray-700">🔗 可行的轉介支援服務：</strong>
+                        ${yellowSupportHtml}
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-2 border-red-600 rounded-xl overflow-hidden shadow-md bg-white">
+                <div class="bg-red-600 text-white p-2.5 font-bold text-xs flex justify-between items-center animate-pulse">
+                    <span><i class="fa-solid fa-circle-exclamation mr-1"></i> ${data.triage.red.label}</span>
+                    <span class="text-[10px] bg-red-800 px-2 py-0.5 rounded font-black tracking-wider">高風險 / 緊急</span>
+                </div>
+                <div class="p-3 space-y-3">
+                    <div class="text-xs text-red-700 bg-red-50 p-2.5 rounded-lg border border-red-100 font-medium">
+                        <strong>🚨 高風險條件 / 例子：</strong>
+                        <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.red.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
+                    </div>
+                    <div class="text-xs text-gray-600 border-t border-gray-100 pt-2">
+                        <strong>🛠️ 應急介入手法（安全為大前提）：</strong>
+                        <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.red.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
+                    </div>
+                    <div class="border-t border-gray-100 pt-2">
+                        <strong class="text-xs text-red-900 flex items-center gap-1">
+                            <i class="fa-solid fa-truck-medical"></i> 🔗 應急應變與緊急轉介支援：
+                        </strong>
+                        ${redSupportHtml}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // 5. 建立轉介後可行角色 HTML
+    let aftercareHtml = '<ul class="list-disc pl-4 text-xs text-gray-600 space-y-2 leading-relaxed">';
+    data.aftercare.forEach(af => aftercareHtml += `<li>${af}</li>`);
+    aftercareHtml += '</ul>';
+
+    // 6. 將所有處理好的模組結構渲染進 HTML 容器
+    document.getElementById('crisisDetailContent').innerHTML = `
+        <div class="space-y-6 pb-12">
+            <div>
+                <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1"><i class="fa-solid fa-bookmark text-blue-600"></i> 1. 基本概念及基本理解</h3>
+                ${conceptHtml}
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1"><i class="fa-solid fa-paste text-blue-600"></i> 2. 轉介前的預備工作</h3>
+                ${preReferralHtml}
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1"><i class="fa-solid fa-magnifying-glass-chart text-blue-600"></i> 3. 危機風險條件辨識評估</h3>
+                ${riskHtml}
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-slate-800 mb-1 flex items-center gap-1"><i class="fa-solid fa-traffic-light text-blue-600"></i> 4. 介入分流 (紅、黃、綠燈指引)</h3>
+                <p class="text-[11px] text-gray-400 mb-3 italic">僅供 FCBP 熟悉相關危機個案的可行處理方法，並非要求必須完成之任務。</p>
+                ${triageHtml}
+            </div>
+            <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                <h3 class="text-sm font-bold text-blue-950 mb-2 flex items-center gap-1"><i class="fa-solid fa-user-shield text-blue-700"></i> 5. FCBP 於轉介後的可行角色</h3>
+                ${aftercareHtml}
+            </div>
+            
+            <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-center shadow-sm">
+                <p class="text-xs text-amber-900 font-medium"><i class="fa-solid fa-phone-volume mr-1"></i> 醫管局二十四小時精神健康熱線</p>
+                <a href="tel:24667350" class="text-lg font-bold text-amber-700 tracking-wider block mt-0.5 hover:underline"><i class="fa-solid fa-phone mr-1"></i> 2466 7350</a>
+            </div>
+        </div>
+    `;
+}
+
+// 7.5 從一般個案介面返回分流首頁
+function backToTriageFromGeneral() {
+    // 1. 顯示分流框架首頁
+    const triagePage = document.getElementById('triagePage');
+    if (triagePage) triagePage.classList.remove('hidden');
+    
+    // 2. 隱藏一般個案的主內容和頂部欄
+    document.querySelector('header').classList.add('hidden');
+    document.querySelector('main').classList.add('hidden');
+    
+    // 貼心體驗：自動讓網頁捲回最上方
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function backToCrisisMenu() {
+    document.getElementById('crisisDetailPage').classList.add('hidden');
+    document.getElementById('crisisMainMenu').classList.remove('hidden');
+}
+    </script>
+</body>
+</html>
