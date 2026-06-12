@@ -504,7 +504,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-     // 7.1 危機個案資料庫（已完美擴充精神與自殺雙模組，紅燈全面 Box 化拆分）
+    // 7.1 危機個案資料庫（已完美升級：加入官方超連結網址）
 const crisisData = {
     mental: {
         title: "精神或情緒問題",
@@ -536,8 +536,8 @@ const crisisData = {
                     "<strong>社房活動：</strong>於社房舉辦一些健康身心活動（靜觀、放鬆身心的班組、表達藝術治療小組等）。"
                 ],
                 support: [
-                    { name: "Shall We Talk 網站", detail: "提供精神健康相關的網站、APP 或熱線予街坊參考" },
-                    { name: "綜合家庭服務中心", detail: "如有進一步輔導需要，可以嘗試在街坊同意下轉介其接受輔導服務" }
+                    { name: "Shall We Talk 網站", detail: "提供精神健康相關的網站、APP 或熱線予街坊參考", url: "https://www.shallwetalk.hk/" },
+                    { name: "綜合家庭服務中心", detail: "如有進一步輔導需要，可以嘗試在街坊同意下轉介其接受輔導服務", url: "https://www.swd.gov.hk/tc/index/site_pubsvc/page_family/sub_listoffami/" }
                 ]
             },
             yellow: {
@@ -549,14 +549,14 @@ const crisisData = {
                 ],
                 actions: [
                     "<strong>需要進行持續評估：</strong>在日常與街坊接觸時，可留意他/她的情緒狀況及反應，當察覺有異樣時可以立即跟進。",
-                    "<strong>情緒調節：</strong>提供基礎情緒支援（如：深呼吸練習、積極傾聽），舒緩街坊當下壓力。如街坊動力較高而又合適，可一同制定一些改善身心靈的計劃（睡眠、靜觀等）。",
+                    "<strong>情緒調節：</strong>提供基礎情緒支援（如：深呼吸練習、積極傾傾），舒緩街坊當下壓力。如街坊動力較高而又合適，可一同制定一些改善身心靈的計劃（睡眠、靜觀等）。",
                     "<strong>醫療跟進：</strong>嘗試了解街坊接受精神科服務的看法及意願，必要時可以先跟街坊說看醫生處理失眠、心跳等生理狀況，並在可行情況下陪同看醫生，增加街坊的安全感。"
                 ],
                 support: [
-                    { name: "CBF 資助睇醫生", detail: "可在可行情況下陪同看醫生，增加街坊的安全感。考慮使用 CBF 資助街坊看醫生。" },
-                    { name: "精神健康綜合社區中心 (ICCMW)", detail: "不一定要所有人同意，有家人屬同意也可接受轉介，但需要具體表示個案所呈現的類似情緒或精神狀況。" },
-                    { name: "普通科門診 / 私家醫生", detail: "安排普通科門診或私家醫生（可以考慮使用 CBF）。" },
-                    { name: "港大心理服務組", detail: "如個案願意接受心理學家輔導，而又有經濟考慮，可建議使用港大心理服務組的服務。" }
+                    { name: "CBF 資助計劃詳情", detail: "可在可行情況下陪同看醫生，增加街坊的安全感。考慮使用 CBF 資助街坊看醫生。", url: "https://www.communitybusiness.org/" },
+                    { name: "精神健康綜合社區中心 (ICCMW)", detail: "不一定要所有人同意，有家人屬同意也可接受轉介，但需要具體表示個案所呈現的類似情緒或精神狀況。", url: "https://www.swd.gov.hk/tc/pubsvc/rehab/cat_psychiatric/iccmw/" },
+                    { name: "普通科門診預約流程", detail: "安排普通科門診或私家醫生（可以考慮使用 CBF）。", url: "https://www.ha.org.hk/visitor/ha_visitor_index.asp?Content_ID=200252&Lang=CH" },
+                    { name: "港大心理服務組", detail: "如個案願意接受心理學家輔導，而又有經濟考慮，可建議使用港大心理服務組的服務。", url: "https://psychology.hku.hk/clinical-psychological-services/" }
                 ]
             },
             red: {
@@ -574,8 +574,8 @@ const crisisData = {
                     "<strong>緊急介入：</strong>如街坊有表示強烈意願及行動去傷害別人或自己，通報上司或督導以視情況衡量適合的專業應急介入。"
                 ],
                 support: [
-                    { name: "🚨 醫院急症室服務 (A&E)", detail: "急症室設有觀察病房，並可以安排精神科護士或醫生評估個案情況，<strong>必要時可以強制病人入院</strong>接受治療。" },
-                    { name: "🏥 精神健康綜合社區中心 (ICCMW)", detail: "對有幻覺、妄想等個案，而又<strong>未有</strong>即時傷害自己或其他人類頭/行為的病人，可馬上轉介 ICCMW 緊密跟進。" }
+                    { name: "🚨 醫院急症室服務 (A&E) 分佈", detail: "急症室設有觀察病房，並可以安排精神科護士或醫生評估個案情況，<strong>必要時可以強制病人入院</strong>接受治療。", url: "https://www.ha.org.hk/visitor/ha_visitor_index.asp?Content_ID=10051&Lang=CH" },
+                    { name: "🏥 ICCMW 屯門區中心服務", detail: "對有幻覺、妄想等個案，而又<strong>未有</strong>即時傷害自己或其他人類頭/行為的病人，可馬上轉介 ICCMW 緊密跟進。", url: "https://www.swd.gov.hk/tc/pubsvc/rehab/cat_psychiatric/iccmw/" }
                 ]
             }
         },
@@ -589,7 +589,7 @@ const crisisData = {
         concept: [
             "<strong>引發點：</strong>自殺是一個衝動的行為，但並非無跡可尋。因此，相信每個人有衝動行為的背後均可能有一系列引發的事件，而事件可能與失去 (Loss) 有關。況且，引發自殺行為的事件往往是一個導火線，不一定是問題的核心。",
             "<strong>態度：</strong>以當事人的角度出發，並以不批判態度多了解當事人，才有望更深入了解當事人的痛苦。",
-            "<div class='bg-purple-50 text-purple-900 border border-purple-200 p-2.5 rounded font-medium text-[11px] flex items-center gap-1.5'><i class='fa-solid fa-triangle-exclamation'></i> 核心核心提醒：並非需要 FCBP 做輔導，只需要知道基本概念就足夠。</div>"
+            "<div class='bg-purple-50 text-purple-900 border border-purple-200 p-2.5 rounded font-medium text-[11px] flex items-center gap-1.5'><i class='fa-solid fa-triangle-exclamation'></i> 核心提醒：並非需要 FCBP 做輔導，只需要知道基本概念就足夠。</div>"
         ],
         preReferral: [
             "提供 24 小時的支援熱線資料予街坊備用，鼓勵他們如有疑難及困擾可以尋找支援。<br><strong class='text-red-600 block mt-1'><i class='fa-solid fa-phone-flip'></i> 生命熱線：2382 0000 / 撒瑪利亞防止自殺會：2389 2222 / 社署熱線：2343 2255</strong>"
@@ -599,7 +599,7 @@ const crisisData = {
             { title: "自殺計劃", desc: "尋找自殺的方法或途徑、嘗試獲取自殺的工具、安排身後事，例如：寫遺書、將貴重財物轉贈他人。" },
             { title: "自殺經驗", desc: "過往曾企圖自殺；有自我傷害行為。" },
             { title: "環境因素", desc: "經歷意外或災難；受虐待或暴力對待；受性侵犯；受欺凌或欺凌他人；與家人、朋友、情人分離；家人、朋友、情人去世；有家族成員曾自殺過身（特別是父母）；父母有精神健康問題（例如：抑鬱症）；獨居。" },
-            { title: "其他危機", desc: "精神健康問題（例如：抑鬱症）；性情和情緒大幅改變；酗酒、濫用藥物；罹患重病。" }
+            { title: "其他危機", desc: "精神健康問題（例如：抑鬱症）；性情和情緒大幅改變；酗酒、濫用藥物；罹罹重病。" }
         ],
         triage: {
             green: {
@@ -616,8 +616,8 @@ const crisisData = {
                     "<strong>角色定位：</strong>繼續維持日常的聯繫，關注其情緒穩定度，扮演支持角色。"
                 ],
                 support: [
-                    { name: "Shall We Talk 網站", detail: "提供精神健康相關的網站、APP 或熱線予街坊參考。" },
-                    { name: "綜合家庭服務中心", detail: "如有進一步輔導需要，可以嘗試在街坊同意下轉介其接受輔導服務。" }
+                    { name: "Shall We Talk 網站", detail: "提供精神健康相關的網站、APP 或熱線予街坊參考。", url: "https://www.shallwetalk.hk/" },
+                    { name: "綜合家庭服務中心通訊錄", detail: "如有進一步輔導需要，可以嘗試在街坊同意下轉介其接受輔導服務。", url: "https://www.swd.gov.hk/tc/index/site_pubsvc/page_family/sub_listoffami/" }
                 ]
             },
             yellow: {
@@ -635,9 +635,9 @@ const crisisData = {
                     "<strong>深入探討源頭：</strong>在情況許可下，與街坊探討其壓力及引發事件的來源，嘗試了解相關事件的情況，並在適當時候嘗試陪伴街坊拆解（尋找及連結社會資源）或轉介至其他合適單位跟進。"
                 ],
                 support: [
-                    { name: "精神健康綜合社區中心 (ICCMW)", detail: "不一定要所有人同意，有家人同意也可轉介，但需要具體表示個案所呈現的狀況。" },
-                    { name: "醫療與心理輔導", detail: "安排普通科門診、私家醫生或接受心理輔導。" },
-                    { name: "醫管局精神健康熱線", detail: "可在有需要時致電醫管局二十四小時精神健康熱線諮詢服務：2466 7350。" }
+                    { name: "精神健康綜合社區中心 (ICCMW)", detail: "不一定要所有人同意，有家人同意也可轉介，但需要具體表示個案所呈現的狀況。", url: "https://www.swd.gov.hk/tc/pubsvc/rehab/cat_psychiatric/iccmw/" },
+                    { name: "情緒通 24小時熱線網", detail: "全港精神健康支援熱線與網上輔導資源連結。", url: "https://www.mentalhealthonline.hk/" },
+                    { name: "醫管局精神健康網", detail: "可在有需要時致電醫管局二十四小時精神健康熱線諮詢服務：2466 7350。", url: "https://www.ha.org.hk/" }
                 ]
             },
             red: {
@@ -657,8 +657,8 @@ const crisisData = {
                     "<strong>即時危機應變：</strong>如街坊已表示有強烈的傷害自己念頭或有具體計劃，如仍有空間諮詢上司，可商討後決定是否需要盡快說服街坊接受醫療服務，甚至乎要送院接受治療。"
                 ],
                 support: [
-                    { name: "🕯️ 撒瑪利亞防止自殺會 — 危機輔導服務", detail: "可轉介個案至撒瑪利亞防止自殺會安排自殺個案輔導。" },
-                    { name: "🚨 醫院急症室服務 (A&E)", detail: "急症室設有觀察病房，並可以安排精神科護士或醫生評估個案情況，必要時可以強制病人入院接受治療。" }
+                    { name: "🕯️ 撒瑪利亞防止自殺會 — 危機輔導", detail: "可轉介個案至撒瑪利亞防止自殺會安排專屬自殺個案輔導及網上轉介。", url: "https://sbhk.org.hk/" },
+                    { name: "🚨 醫院急症室服務 (A&E)", detail: "急症室設有觀察病房，並可以安排精神科護士或醫生評估個案情況，必要時可以強制病人入院接受治療。", url: "https://www.ha.org.hk/visitor/ha_visitor_index.asp?Content_ID=10051&Lang=CH" }
                 ]
             }
         },
@@ -801,41 +801,51 @@ function openCrisisDetail(crisisKey) {
     // 4. 建立三色燈號 Box 化 HTML（動態綁定當前模組的 support 陣列）
     
     // 🟢 綠燈 Box 渲染
+        // 🟢 綠燈 Box 渲染（升級版：加入右側精美網址按鈕）
     let greenSupportHtml = '<div class="grid grid-cols-1 gap-2 mt-2">';
     data.triage.green.support.forEach(s => {
         greenSupportHtml += `
-            <div class="p-2.5 bg-green-50/60 border border-green-200 rounded-lg">
-                <h4 class="font-bold text-green-900 text-xs flex items-center gap-1.5">
-                    <i class="fa-solid fa-square-rss text-green-600"></i> ${s.name}
-                </h4>
-                <p class="text-[11px] text-green-800 mt-0.5 leading-relaxed">${s.detail}</p>
+            <div class="p-2.5 bg-green-50/60 border border-green-200 rounded-lg flex justify-between items-center gap-3">
+                <div class="flex-1">
+                    <h4 class="font-bold text-green-900 text-xs flex items-center gap-1.5">
+                        <i class="fa-solid fa-square-rss text-green-600"></i> ${s.name}
+                    </h4>
+                    <p class="text-[11px] text-green-800 mt-0.5 leading-relaxed">${s.detail}</p>
+                </div>
+                ${s.url ? `<a href="${s.url}" target="_blank" class="shrink-0 bg-white hover:bg-green-100 text-green-700 text-[10px] font-bold px-2.5 py-1.5 rounded-md border border-green-300 shadow-sm flex items-center gap-1 transition-colors"><i class="fa-solid fa-arrow-up-right-from-square"></i> 連結</a>` : ''}
             </div>`;
     });
     greenSupportHtml += '</div>';
 
-    // 🟡 黃燈 Box 渲染
+    // 🟡 黃燈 Box 渲染（升級版：加入右側精美網址按鈕）
     let yellowSupportHtml = '<div class="grid grid-cols-1 gap-2 mt-2">';
     data.triage.yellow.support.forEach(s => {
         yellowSupportHtml += `
-            <div class="p-2.5 bg-yellow-50/60 border border-yellow-200 rounded-lg">
-                <h4 class="font-bold text-yellow-900 text-xs flex items-center gap-1.5">
-                    <i class="fa-solid fa-hand-holding-hand text-yellow-600"></i> ${s.name}
-                </h4>
-                <p class="text-[11px] text-yellow-800 mt-0.5 leading-relaxed">${s.detail}</p>
+            <div class="p-2.5 bg-yellow-50/60 border border-yellow-200 rounded-lg flex justify-between items-center gap-3">
+                <div class="flex-1">
+                    <h4 class="font-bold text-yellow-900 text-xs flex items-center gap-1.5">
+                        <i class="fa-solid fa-hand-holding-hand text-yellow-600"></i> ${s.name}
+                    </h4>
+                    <p class="text-[11px] text-yellow-800 mt-0.5 leading-relaxed">${s.detail}</p>
+                </div>
+                ${s.url ? `<a href="${s.url}" target="_blank" class="shrink-0 bg-white hover:bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2.5 py-1.5 rounded-md border border-yellow-300 shadow-sm flex items-center gap-1 transition-colors"><i class="fa-solid fa-arrow-up-right-from-square"></i> 連結</a>` : ''}
             </div>`;
     });
     yellowSupportHtml += '</div>';
 
-    // 🔴 紅燈 Box 渲染
+    // 🔴 紅燈 Box 渲染（升級版：加入右側緊急外連按鈕）
     let redSupportHtml = '<div class="grid grid-cols-1 gap-2 mt-2">';
     data.triage.red.support.forEach(s => {
         const iconClass = crisisKey === 'suicide' ? 'fa-solid fa-candle-holder' : 'fa-solid fa-shield-halved';
         redSupportHtml += `
-            <div class="p-2.5 bg-red-50 border border-red-200 rounded-lg shadow-sm">
-                <h4 class="font-bold text-red-900 text-xs flex items-center gap-1.5">
-                    <i class="${iconClass} text-red-600 animate-pulse"></i> ${s.name}
-                </h4>
-                <p class="text-[11px] text-red-800 mt-0.5 leading-relaxed font-medium">${s.detail}</p>
+            <div class="p-2.5 bg-red-50 border border-red-200 rounded-lg shadow-sm flex justify-between items-center gap-3">
+                <div class="flex-1">
+                    <h4 class="font-bold text-red-900 text-xs flex items-center gap-1.5">
+                        <i class="${iconClass} text-red-600 animate-pulse"></i> ${s.name}
+                    </h4>
+                    <p class="text-[11px] text-red-800 mt-0.5 leading-relaxed font-medium">${s.detail}</p>
+                </div>
+                ${s.url ? `<a href="${s.url}" target="_blank" class="shrink-0 bg-white hover:bg-red-100 text-red-700 text-[10px] font-bold px-2.5 py-1.5 rounded-md border border-red-300 shadow-sm flex items-center gap-1 transition-colors"><i class="fa-solid fa-arrow-up-right-from-square"></i> 開啟</a>` : ''}
             </div>`;
     });
     redSupportHtml += '</div>';
