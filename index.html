@@ -18,11 +18,11 @@
 <body class="bg-gray-100 min-h-screen font-sans">
 
 <div id="disclaimerPage" class="fixed inset-0 bg-gray-900 z-[9999] flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] flex flex-col p-6">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full lg:max-w-4xl max-h-[85vh] flex flex-col p-6">
         
         <div class="text-center pb-4 border-b border-gray-200">
             <i class="fa-solid fa-triangle-exclamation text-amber-500 text-3xl mb-2"></i>
-            <h2 class="text-xl font-bold text-gray-800">系統使用免責聲明</h2>
+            <h2 class="text-xl font-bold text-gray-800">JC PROJECT LIFT個案分流框架 使用免責聲明</h2>
         </div>
 
         <div class="flex-1 overflow-y-auto my-4 text-sm text-gray-600 space-y-3 pr-2 leading-relaxed">
@@ -45,7 +45,7 @@
 </div>
 
 <div id="triagePage" class="fixed inset-0 bg-gray-950 z-[9998] flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full lg:max-w-3xl p-6 text-center">
         
         <div class="pb-4 border-b border-gray-200 mb-6">
             <i class="fa-solid fa-diagram-project text-blue-600 text-3xl mb-2"></i>
@@ -61,7 +61,7 @@
                 </div>
                 <div>
                     <h3 class="font-bold text-blue-900 text-base">一般個案類型</h3>
-                    <p class="text-xs text-blue-700 mt-0.5">喪親家庭、照顧者、賭博、工傷等社區指引</p>
+                    <p class="text-xs text-blue-700 mt-0.5">喪親家庭、照顧者支援、賭博問題、工傷等</p>
                 </div>
             </button>
 
@@ -82,10 +82,10 @@
 
 <div id="crisisMainMenu" class="fixed inset-0 bg-gray-100 z-[9990] flex flex-col hidden overflow-y-auto">
     <header class="bg-red-600 text-white p-4 shadow-md sticky top-0 flex items-center gap-3">
-        <button onclick="backToTriage()" class="text-white hover:text-red-200 cursor-pointer text-lg"><i class="fa-solid fa-chevron-left"></i></button>
-        <h1 class="text-lg font-bold">危機個案狀況 (5大範疇)</h1>
+        <button onclick="backToTriage()" class="text-white hover:text-red-200 cursor-pointer text-lg"><i class="fa-solid fa-house"></i></button>
+        <h1 class="text-lg font-bold">危機個案狀況</h1>
     </header>
-    <main class="max-w-md w-full mx-auto p-4 space-y-3 pb-12">
+    <main class="max-w-md w-full mx-auto p-4 space-y-3 pb-12 lg:max-w-5xl lg:px-6">
         <div class="bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-xs text-yellow-800 font-medium mb-2">
             <i class="fa-solid fa-circle-info mr-1"></i> 請點擊下方個案類別，查閱基本理解、風險辨識與燈號分流指引。
         </div>
@@ -135,24 +135,24 @@
 <div id="crisisDetailPage" class="fixed inset-0 bg-gray-100 z-[9991] flex flex-col hidden overflow-y-auto">
     <header class="bg-slate-800 text-white p-4 shadow-md sticky top-0 flex items-center gap-3">
         <button onclick="backToCrisisMenu()" class="text-white hover:text-slate-300 cursor-pointer text-lg"><i class="fa-solid fa-chevron-left"></i></button>
-        <h1 class="text-lg font-bold">🧠 精神或情緒問題指引</h1>
+        <h1 class="text-xl font-bold">🧠 精神或情緒問題</h1>
     </header>
-    <main id="crisisDetailContent" class="max-w-md w-full mx-auto p-4 pb-20">
+    <main id="crisisDetailContent" class="max-w-md w-full mx-auto p-4 pb-20 lg:max-w-5xl lg:px-6">
         </main>
 </div>
 
-<header id="generalHeader"class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
-    <div class="max-w-md mx-auto flex items-center justify-between">
+<header id="generalHeader" class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-4 sm:px-6 lg:px-8">
         <button onclick="backToTriageFromGeneral()" class="text-white hover:text-blue-200 cursor-pointer text-lg mr-3">
             <i class="fa-solid fa-house"></i>
         </button>
         
-        <h1 class="text-xl font-bold flex-1"><i class="fa-solid fa-hands-holding-child mr-1"></i>FCBP 隨身工具包</h1>
+        <h1 class="text-xl font-bold flex-1">一般個案種類參考</h1>
         <span class="text-xs bg-blue-700 px-2 py-1 rounded shrink-0">v1.0</span>
     </div>
 </header>
 
-    <main id="generalMain" class="max-w-md mx-auto p-4 pb-24">
+    <main id="generalMain" class="max-w-6xl mx-auto p-4 pb-24 lg:px-6">
         
         <div class="mb-4 relative">
             <input type="text" id="searchInput" oninput="handleSearch()" placeholder="搜尋關鍵字（如：喪禮、津貼、SEN）..." 
@@ -165,7 +165,7 @@
             <ul id="searchList" class="space-y-2 text-sm text-gray-700"></ul>
         </div>
 
-        <section class="grid grid-cols-2 gap-2 mb-6">
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-6">
             <button onclick="switchCategory('bereavement')" id="btn-bereavement" class="cat-btn p-3 bg-white rounded-lg shadow-sm text-left border-l-4 border-amber-500 font-medium text-gray-800 hover:bg-gray-50">
                 <i class="fa-solid fa-ribbon text-amber-500 mr-1"></i> 喪親家庭
             </button>
@@ -186,11 +186,11 @@
         </div>
 
         <div class="bg-white flex shadow-sm mb-4 border-b border-gray-200">
-            <button onclick="switchTab('direction')" id="tab-direction" class="tab-btn flex-1 py-3 text-center text-sm font-medium text-gray-500 active-tab">
-                <i class="fa-solid fa-compass block mb-1"></i> 工作方向
-            </button>
             <button onclick="switchTab('needs')" id="tab-needs" class="tab-btn flex-1 py-3 text-center text-sm font-medium text-gray-500">
                 <i class="fa-solid fa-clipboard-list block mb-1"></i> 街坊需要
+            </button>
+            <button onclick="switchTab('direction')" id="tab-direction" class="tab-btn flex-1 py-3 text-center text-sm font-medium text-gray-500 active-tab">
+                <i class="fa-solid fa-compass block mb-1"></i> 可行工作方向
             </button>
             <button onclick="switchTab('resources')" id="tab-resources" class="tab-btn flex-1 py-3 text-center text-sm font-medium text-gray-500">
                 <i class="fa-solid fa-link block mb-1"></i> 外界資源
@@ -239,19 +239,27 @@
     { 
         name: "護慰天使 (哀傷支援服務)", 
         detail: "提供殯儀諮詢及治喪陪伴，以及個別輔導服務或同路人小組等",
-        url: "https://www.skhwc.org.hk/zh-hant/services/hospice-care/#paraclete-care-comfort-angel" // 👈 新增這行網址
+        url: "https://www.skhwc.org.hk/zh-hant/services/hospice-care/#paraclete-care-comfort-angel",
+        location: "九龍城、全港各區" 
     },
     { 
         name: "「生命頌」基層殯儀服務計劃", 
         detail: "一切從兼 - 殯儀社企 / 毋忘愛",
-        url: "https://www.forgettheenot.org.hk/funeral-support-2/" 
+        url: "https://www.forgettheenot.org.hk/funeral-support-2/",
+        location: ""
     },
     { 
         name: "仁濟醫院緊急援助基金", 
         detail: "提供緊急經濟援助",
-        url: "https://www.yanchai.org.hk/services/charity-fund/yan-chai-emergency-assistance-relief-fund" // 👈 如果有些機構沒有網站，留空即可
+        url: "https://www.yanchai.org.hk/services/charity-fund/yan-chai-emergency-assistance-relief-fund",
+        location: ""
     },
-    // ... 其他機構以此類推
+    { 
+        name: "賽馬會緊急援助基金", 
+        detail: "為不幸遭受災害和突發事故的市民及家庭，提供緊急及切實的支援，協助他們渡過最艱難的時刻，並帶着希望面對未來",
+        url: "https://charities.hkjc.com/zh-hk/about-us/community-projects/project-directory-details?id=project/2024/02/jc-emergency-relief-fund",
+        location: ""
+    }
 ]
 
             },
@@ -273,12 +281,12 @@
                     "兒童特殊學習需要(SEN)：照顧有特殊學習需要兒童、課餘託管及功課輔導"
                 ],
                 resources: [
-                    { name: "香港癌症基金會", detail: "經濟援助、訂購營養奶粉、護士諮詢、輔導服務" },
-                    { name: "醫院管理局", detail: "離院支援服務" },
-                    { name: "殘疾人士地區支援中心", detail: "可按需要進行評估以輪候資助服務（住宿照顧、庇護工場等）" },
-                    { name: "長者地區中心 / 鄰舍中心", detail: "需要評估及輪候支援服務（綜合家居照顧服務、長者日間護理、暫託服務、買位/院舍服務）" },
-                    { name: "特殊幼兒服務 / 政府評估中心 (CAC)", detail: "S位-特殊幼兒中心；E位-早期訓練中心；I位-兼收計劃；O位-到校學前康復服務" },
-                    { name: "社署轄下日間兒童照顧服務", detail: "幼兒中心服務、學前兒童課餘託管、小學生課餘託管、鄰里支援幼兒照顧計劃" }
+                    { name: "香港癌症基金會", detail: "經濟援助、訂購營養奶粉、護士諮詢、輔導服務", url:"https://www.cancer-fund.org", location: "全港各區", target: "癌症病人" },
+                    { name: "醫院管理局", detail: "離院長者綜合支援計劃", url:"https://www.smartpatient.ha.org.hk/docs/default-source/default-document-library/info-on-spw---idsp.pdf?sfvrsn=f32271c6_5", location: "全港各區", target: "長者" },
+                    { name: "殘疾人士地區支援中心", detail: "可按需要進行評估以輪候資助服務（住宿照顧、庇護工場等）", url:"https://www.swd.gov.hk/tc/pubsvc/rehab/cat_supportcom/centrebase/dsc/", location: "全港各區", target: "殘疾人士" },
+                    { name: "長者地區中心 / 鄰舍中心", detail: "需要評估及輪候支援服務（綜合家居照顧服務、長者日間護理、暫託服務、買位/院舍服務）", url:"https://www.swd.gov.hk/tc/pubsvc/elderly/cat_commsupp/elderly_centres/", location: "全港各區", target: "長者" },
+                    { name: "學前康復服務", detail: "S位-特殊幼兒中心；E位-早期訓練中心；I位-兼收計劃；O位-到校學前康復服務", url:"https://www.swd.gov.hk/tc/pubsvc/rehab/cat_serpresch/", location: "全港各區", target: "兒童" },
+                    { name: "社署轄下日間兒童照顧服務", detail: "幼兒中心服務、學前兒童課餘託管、小學生課餘託管、鄰里支援幼兒照顧計劃", url:"https://www.swd.gov.hk/tc/pubsvc/family/cat_childcareservice/daychildcares/index.html", location: "全港各區", target: "兒童" }
                 ]
             },
             gambling: {
@@ -293,9 +301,12 @@
                     "戒賭支援服務 — 街坊與家人需要輔導支援"
                 ],
                 resources: [
-                    { name: "平和坊 (東華三院)", detail: "問題賭博輔導及治療中心 — 提供輔導支援予沉迷賭博人士及其家人" },
-                    { name: "路德會青亮中心 / 明愛展晴中心", detail: "戒賭輔導服務" },
-                    { name: "錫安社會服務處勵顧輔導中心 / Smart i-Change (ELCHK)", detail: "賭博輔導服務" }
+                    { name: "平和戒賭熱線", detail: "1834 633", url: "https://www.donotgamble.org.hk/tc/helpdesk1.php", location: "" },
+                    { name: "東華三院平和坊", detail: "問題賭博輔導及治療中心 — 提供輔導支援予沉迷賭博人士及其家人", url: "https://evencentre.tungwahcsd.org", location: "灣仔" },
+                    { name: "路德會青亮中心", detail: "戒賭輔導服務", url: "https://sunshine-ccg.hklss.hk/hk/?gad_source=1&gad_campaignid=23429634456&gbraid=0AAAAApKmFFR6VaFjS58rmsQsQg1P-talW&gclid=CjwKCAjwxb7RBhA5EiwAQ-AAdJ67K-KC3Dq_7Iga5D4lQEzGbHaIYjWg2xksIJ1qwaTN5zThBczBURoClV4QAvD_BwE", location: "新界東 - 大埔" },
+                    { name: "明愛展晴中心", detail: "戒賭輔導服務", url: "https://agcc.caritas.org.hk", location: "新界西 - 荃灣" },
+                    { name: "錫安社會服務處勵顧輔導中心", detail: "賭博輔導服務", url: "https://ylh.org.hk", location: "東九龍 - 觀塘" },
+                    { name: "信義會 Smart i-Change 賭博輔導服務", detail: "戒賭輔導服務", url: "https://i-change.elchk.org.hk/?gad_source=1&gad_campaignid=23644287028&gbraid=0AAAAArBH7ecApnfgAQB3fFce-MQiT6QBQ&gclid=CjwKCAjwxb7RBhA5EiwAQ-AAdF0o7a0zYKw0X4XzY2nfeGMngjBaqE_PLOlRGCdOpw5qUtF8ayl_OxoCCqcQAvD_BwE", location: "新界西 - 元朗" }
                 ]
             },
             injury: {
@@ -313,8 +324,8 @@
                     "個人生活復原 — 重新計劃未來生活"
                 ],
                 resources: [
-                    { name: "工業傷亡權益會", detail: "工業傷亡個案跟進 / 情緒輔導服務" },
-                    { name: "CBF Vendor List 物理治療", detail: "痛症或其他物理治療服務等" }
+                    { name: "工業傷亡權益會", detail: "工業傷亡個案跟進 / 情緒輔導服務", url: "https://www.ariav.org.hk", location: "藍田、全港各區" },
+                    { name: "CBF Vendor List 物理治療", detail: "痛症或其他物理治療服務等",  url: "https://docs.google.com/spreadsheets/d/16M7H5PBf3cp9EjgZ1yfCJeAzfwAQxFpp/edit?usp=sharing&ouid=115350263902848848479&rtpof=true&sd=true", location: "" }
                 ]
             }
         };
@@ -359,47 +370,62 @@
             const data = appData[currentCategory][currentTab];
             
             if (currentTab === 'direction') {
-                // 工作方向：Checkbox 清單
-                data.forEach((item, index) => {
-                    container.innerHTML += `
-                        <div class="flex items-start bg-gray-50 p-3 rounded border border-gray-100">
-                            <input type="checkbox" id="check-${index}" class="mt-1 mr-3 w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-                            <label for="check-${index}" class="text-gray-700 text-sm leading-relaxed">${item}</label>
-                        </div>
-                    `;
-                });
-            } else if (currentTab === 'needs') {
-                // 街坊需要：條列式卡片
+                // 工作方向：點列式清單
+                container.innerHTML += `<ul class="space-y-3">`;
                 data.forEach(item => {
                     container.innerHTML += `
-                        <div class="p-3 bg-red-50 border-l-4 border-red-400 rounded-r text-sm text-gray-700 font-medium">
-                            <i class="fa-solid fa-circle-exclamation text-red-500 mr-2"></i>${item}
+                        <li class="flex gap-2 items-start bg-gray-50 p-3 rounded border border-gray-100 text-gray-700 text-sm leading-relaxed">
+                            <span class="mt-1 text-blue-600"><i class="fa-solid fa-circle text-[10px]"></i></span>
+                            <span>${item}</span>
+                        </li>
+                    `;
+                });
+                container.innerHTML += `</ul>`;
+            } else if (currentTab === 'needs') {
+                // 街坊需要：淺黃色點列式卡片
+                data.forEach(item => {
+                    container.innerHTML += `
+                        <div class="p-3 bg-yellow-50 border border-yellow-200 rounded text-sm text-gray-700">
+                            <div class="flex items-start gap-2">
+                                <span class="mt-1 text-yellow-500"><i class="fa-solid fa-circle text-[10px]"></i></span>
+                                <span>${item}</span>
+                            </div>
                         </div>
                     `;
                 });
             } else if (currentTab === 'resources') {
-                // 外界資源：帶有複製功能與官網連結的卡片
+                // 外界資源：帶有官網連結的卡片
                 data.forEach(item => {
-                     // 預設建立「複製」按鈕
-                      let buttonsHtml = `
-                        <button onclick="copyToClipboard('${item.name}：${item.detail}')" class="text-xs bg-white text-gray-500 border border-gray-300 px-2 py-1 rounded hover:bg-gray-100 cursor-pointer">
-                         <i class="fa-regular fa-copy"></i> 複製
-                         </button>
-                    `;
+                    let buttonsHtml = '';
 
-                     // 👈 核心修改：檢查有沒有 url，有的話就額外加上「官網」超連結按鈕
                     if (item.url && item.url !== "") {
-                        buttonsHtml += `
+                        buttonsHtml = `
                             <a href="${item.url}" target="_blank" class="text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2 py-1 rounded hover:bg-blue-100 font-medium">
                                 <i class="fa-solid fa-earth-asia"></i> 官網
                             </a>
                         `;
                     }
 
-                  container.innerHTML += `
+                    let locationHtml = '';
+                    if (item.location && item.location !== "") {
+                        locationHtml = `<span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium"><i class="fa-solid fa-map-pin mr-1"></i>${item.location}</span>`;
+                    }
+
+                    let targetHtml = '';
+                    if (item.target && item.target !== "") {
+                        targetHtml = `<span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-medium">${item.target}</span>`;
+                    }
+
+                    container.innerHTML += `
                         <div class="p-3 bg-green-50 border border-green-200 rounded shadow-sm">
                             <div class="flex justify-between items-start gap-2">
-                                <h4 class="font-bold text-green-900 text-sm flex-1"><i class="fa-solid fa-house-medical mr-1"></i> ${item.name}</h4>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-green-900 text-sm"><i class="fa-solid fa-house-medical mr-1"></i> ${item.name}</h4>
+                                    <div class="flex flex-wrap gap-2 mt-2">
+                                        ${targetHtml}
+                                        ${locationHtml}
+                                    </div>
+                                </div>
                                 <div class="flex gap-1 shrink-0">
                                     ${buttonsHtml}
                                 </div>
@@ -408,14 +434,7 @@
                         </div>
                     `;
                  });
-}
-        }
-
-        // 5. 複製文字功能
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('已複製服務資源資訊，可直接貼給街坊！');
-            });
+            }
         }
 
         // 6. 全局關鍵字搜尋功能
@@ -778,12 +797,12 @@ function openCrisisDetail(crisisKey) {
     }
     
     // 1. 建立基本概念 HTML
-    let conceptHtml = '<ul class="space-y-2 text-xs text-gray-700">';
+    let conceptHtml = '<ul class="space-y-2 text-sm text-gray-700">';
     data.concept.forEach(c => conceptHtml += `<li class="bg-slate-50 p-3 rounded border-l-4 border-slate-400 leading-relaxed">${c}</li>`);
     conceptHtml += '</ul>';
     
     // 2. 建立轉介前預備 HTML
-    let preReferralHtml = '<ul class="space-y-2 text-xs text-gray-700">';
+    let preReferralHtml = '<ul class="space-y-2 text-sm text-gray-700">';
     data.preReferral.forEach(p => preReferralHtml += `<li class="bg-blue-50 p-3 rounded border-l-4 border-blue-400 leading-relaxed">${p}</li>`);
     preReferralHtml += '</ul>';
     
@@ -792,8 +811,8 @@ function openCrisisDetail(crisisKey) {
     data.risks.forEach(r => {
         riskHtml += `
             <div class="p-3 bg-stone-50 border border-stone-200 rounded flex gap-3">
-                <span class="bg-stone-600 text-white font-bold text-[11px] px-2 py-0.5 rounded h-fit shrink-0">${r.title}</span>
-                <p class="text-xs text-gray-600 leading-relaxed">${r.desc}</p>
+                <span class="bg-stone-600 text-white font-bold text-sm px-2 py-0.5 rounded h-fit shrink-0">${r.title}</span>
+                <p class="text-sm text-gray-600 leading-relaxed">${r.desc}</p>
             </div>`;
     });
     riskHtml += '</div>';
@@ -808,10 +827,10 @@ function openCrisisDetail(crisisKey) {
         greenSupportHtml += `
             <div class="p-2.5 bg-green-50/60 border border-green-200 rounded-lg flex justify-between items-center gap-3">
                 <div class="flex-1">
-                    <h4 class="font-bold text-green-900 text-xs flex items-center gap-1.5">
+                    <h4 class="font-bold text-green-900 text-sm flex items-center gap-1.5">
                         <i class="fa-solid fa-square-rss text-green-600"></i> ${s.name}
                     </h4>
-                    <p class="text-[11px] text-green-800 mt-0.5 leading-relaxed">${s.detail}</p>
+                    <p class="text-sm text-green-800 mt-0.5 leading-relaxed">${s.detail}</p>
                 </div>
                 ${hasUrl ? `<a href="${s.url}" target="_blank" class="shrink-0 bg-white hover:bg-green-100 text-green-700 text-[10px] font-bold px-2.5 py-1.5 rounded-md border border-green-300 shadow-sm flex items-center gap-1 transition-colors"><i class="fa-solid fa-arrow-up-right-from-square"></i> 連結</a>` : ''}
             </div>`;
@@ -826,10 +845,10 @@ function openCrisisDetail(crisisKey) {
         yellowSupportHtml += `
             <div class="p-2.5 bg-yellow-50/60 border border-yellow-200 rounded-lg flex justify-between items-center gap-3">
                 <div class="flex-1">
-                    <h4 class="font-bold text-yellow-900 text-xs flex items-center gap-1.5">
+                    <h4 class="font-bold text-yellow-900 text-sm flex items-center gap-1.5">
                         <i class="fa-solid fa-hand-holding-hand text-yellow-600"></i> ${s.name}
                     </h4>
-                    <p class="text-[11px] text-yellow-800 mt-0.5 leading-relaxed">${s.detail}</p>
+                    <p class="text-sm text-yellow-800 mt-0.5 leading-relaxed">${s.detail}</p>
                 </div>
                 ${hasUrl ? `<a href="${s.url}" target="_blank" class="shrink-0 bg-white hover:bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2.5 py-1.5 rounded-md border border-yellow-300 shadow-sm flex items-center gap-1 transition-colors"><i class="fa-solid fa-arrow-up-right-from-square"></i> 連結</a>` : ''}
             </div>`;
@@ -845,10 +864,10 @@ function openCrisisDetail(crisisKey) {
         redSupportHtml += `
             <div class="p-2.5 bg-red-50 border border-red-200 rounded-lg shadow-sm flex justify-between items-center gap-3">
                 <div class="flex-1">
-                    <h4 class="font-bold text-red-900 text-xs flex items-center gap-1.5">
+                    <h4 class="font-bold text-red-900 text-sm flex items-center gap-1.5">
                         <i class="${iconClass} text-red-600 animate-pulse"></i> ${s.name}
                     </h4>
-                    <p class="text-[11px] text-red-800 mt-0.5 leading-relaxed font-medium">${s.detail}</p>
+                    <p class="text-sm text-red-800 mt-0.5 leading-relaxed font-medium">${s.detail}</p>
                 </div>
                 ${hasUrl ? `<a href="${s.url}" target="_blank" class="shrink-0 bg-white hover:bg-red-100 text-red-700 text-[10px] font-bold px-2.5 py-1.5 rounded-md border border-red-300 shadow-sm flex items-center gap-1 transition-colors"><i class="fa-solid fa-arrow-up-right-from-square"></i> 開啟</a>` : ''}
             </div>`;
@@ -859,63 +878,63 @@ function openCrisisDetail(crisisKey) {
     let triageHtml = `
         <div class="space-y-4">
             <div class="border border-green-500 rounded-xl overflow-hidden shadow-sm bg-white">
-                <div class="bg-green-600 text-white p-2.5 font-bold text-xs flex justify-between items-center">
+                <div class="bg-green-600 text-white p-2.5 font-bold text-sm flex justify-between items-center">
                     <span><i class="fa-solid fa-circle-check mr-1"></i> ${data.triage.green.label}</span>
-                    <span class="text-[10px] bg-green-700 px-2 py-0.5 rounded">低風險 / 穩定</span>
+                    <span class="text-xs bg-green-700 px-2 py-0.5 rounded">低風險 / 穩定</span>
                 </div>
                 <div class="p-3 space-y-3">
-                    <div class="text-xs text-gray-600">
+                    <div class="text-sm text-gray-600">
                         <strong>📌 個案例子：</strong>
                         <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.green.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
                     </div>
-                    <div class="text-xs text-gray-600 border-t border-gray-100 pt-2">
+                    <div class="text-sm text-gray-600 border-t border-gray-100 pt-2">
                         <strong>🛠️ 可行的介入手法例子：</strong>
                         <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.green.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
                     </div>
                     <div class="border-t border-gray-100 pt-2">
-                        <strong class="text-xs text-gray-700">🔗 可行的轉介支援服務：</strong>
+                        <strong class="text-sm text-gray-700">🔗 可行的轉介支援服務：</strong>
                         ${greenSupportHtml}
                     </div>
                 </div>
             </div>
 
             <div class="border border-yellow-500 rounded-xl overflow-hidden shadow-sm bg-white">
-                <div class="bg-yellow-500 text-white p-2.5 font-bold text-xs flex justify-between items-center">
+                <div class="bg-yellow-500 text-white p-2.5 font-bold text-sm flex justify-between items-center">
                     <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> ${data.triage.yellow.label}</span>
-                    <span class="text-[10px] bg-yellow-600 px-2 py-0.5 rounded">中風險 / 警覺</span>
+                    <span class="text-xs bg-yellow-600 px-2 py-0.5 rounded">中風險 / 警覺</span>
                 </div>
                 <div class="p-3 space-y-3">
-                    <div class="text-xs text-gray-600">
+                    <div class="text-sm text-gray-600">
                         <strong>📌 個案例子：</strong>
                         <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.yellow.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
                     </div>
-                    <div class="text-xs text-gray-600 border-t border-gray-100 pt-2">
+                    <div class="text-sm text-gray-600 border-t border-gray-100 pt-2">
                         <strong>🛠️ 可行的介入手法：</strong>
                         <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.yellow.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
                     </div>
                     <div class="border-t border-gray-100 pt-2">
-                        <strong class="text-xs text-gray-700">🔗 可行的轉介支援服務：</strong>
+                        <strong class="text-sm text-gray-700">🔗 可行的轉介支援服務：</strong>
                         ${yellowSupportHtml}
                     </div>
                 </div>
             </div>
 
             <div class="border-2 border-red-600 rounded-xl overflow-hidden shadow-md bg-white">
-                <div class="bg-red-600 text-white p-2.5 font-bold text-xs flex justify-between items-center animate-pulse">
+                <div class="bg-red-600 text-white p-2.5 font-bold text-sm flex justify-between items-center animate-pulse">
                     <span><i class="fa-solid fa-circle-exclamation mr-1"></i> ${data.triage.red.label}</span>
-                    <span class="text-[10px] bg-red-800 px-2 py-0.5 rounded font-black tracking-wider">高風險 / 緊急</span>
+                    <span class="text-xs bg-red-800 px-2 py-0.5 rounded font-black tracking-wider">高風險 / 緊急</span>
                 </div>
                 <div class="p-3 space-y-3">
-                    <div class="text-xs text-red-700 bg-red-50 p-2.5 rounded-lg border border-red-100 font-medium">
+                    <div class="text-sm text-red-700 bg-red-50 p-2.5 rounded-lg border border-red-100 font-medium">
                         <strong>🚨 高風險條件 / 例子：</strong>
                         <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.red.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
                     </div>
-                    <div class="text-xs text-gray-600 border-t border-gray-100 pt-2">
+                    <div class="text-sm text-gray-600 border-t border-gray-100 pt-2">
                         <strong>🛠️ 應急介入手法（安全為大前提）：</strong>
                         <ul class="list-disc pl-4 mt-1 space-y-1">${data.triage.red.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
                     </div>
                     <div class="border-t border-gray-100 pt-2">
-                        <strong class="text-xs text-red-900 flex items-center gap-1">
+                        <strong class="text-sm text-red-900 flex items-center gap-1">
                             <i class="fa-solid fa-truck-medical"></i> 🔗 應急應變與緊急轉介支援：
                         </strong>
                         ${redSupportHtml}
