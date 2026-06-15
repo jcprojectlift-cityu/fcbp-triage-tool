@@ -505,6 +505,21 @@
             switchTab(tabKey);
         }
 
+        // 危機詳情頁面內部跳轉
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const detailPage = document.getElementById('crisisDetailPage');
+            const offset = 120; // 避開固定頂欄與 sticky 按鈕
+            if (!section) return;
+            if (detailPage) {
+                const top = section.offsetTop - offset;
+                detailPage.scrollTo({ top, behavior: 'smooth' });
+            } else {
+                const top = section.getBoundingClientRect().top + window.pageYOffset - offset;
+                window.scrollTo({ top, behavior: 'smooth' });
+            }
+        }
+
         // 初始化：一開始先隱藏一般個案介面，等分流選擇後才開啟
         if (document.getElementById('generalHeader')) document.getElementById('generalHeader').classList.add('hidden');
         if (document.getElementById('generalMain')) document.getElementById('generalMain').classList.add('hidden');
@@ -952,24 +967,33 @@ function openCrisisDetail(crisisKey) {
     // 6. 重新完整組裝內容並灌入主容器（同時完美動態載入全域 Footer）
     document.getElementById('crisisDetailContent').innerHTML = `
         <div class="space-y-6 pb-6">
-            <div>
+            <div class="sticky top-[4.2rem] z-40 bg-white/95 backdrop-blur border-b border-slate-200 pb-4 pt-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                    <button onclick="scrollToSection('section-basic-concept')" class="py-3 px-2 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-700">基本概念</button>
+                    <button onclick="scrollToSection('section-risk-assessment')" class="py-3 px-2 bg-yellow-500 text-white rounded-lg text-xs font-semibold hover:bg-yellow-600">危機風險評估</button>
+                    <button onclick="scrollToSection('section-pre-referral')" class="py-3 px-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700">轉介前準備</button>
+                    <button onclick="scrollToSection('section-intervention-triage')" class="py-3 px-2 bg-red-600 text-white rounded-lg text-xs font-semibold hover:bg-red-700">介入分流</button>
+                    <button onclick="scrollToSection('section-post-referral')" class="py-3 px-2 bg-teal-600 text-white rounded-lg text-xs font-semibold hover:bg-teal-700">轉介後工作</button>
+                </div>
+            </div>
+            <div id="section-basic-concept">
                 <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1"><i class="fa-solid fa-bookmark text-blue-600"></i> 1. 基本概念及基本理解</h3>
                 ${conceptHtml}
             </div>
-            <div>
+            <div id="section-pre-referral">
                 <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1"><i class="fa-solid fa-paste text-blue-600"></i> 2. 轉介前的預備工作</h3>
                 ${preReferralHtml}
             </div>
-            <div>
+            <div id="section-risk-assessment">
                 <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1"><i class="fa-solid fa-magnifying-glass-chart text-blue-600"></i> 3. 危機風險條件辨識評估</h3>
                 ${riskHtml}
             </div>
-            <div>
+            <div id="section-intervention-triage">
                 <h3 class="text-sm font-bold text-slate-800 mb-1 flex items-center gap-1"><i class="fa-solid fa-traffic-light text-blue-600"></i> 4. 介入分流 (紅、黃、綠燈指引)</h3>
                 <p class="text-[11px] text-gray-400 mb-3 italic">僅供 FCBP 熟悉相關危機個案的可行處理方法，並非要求必須完成之任務。</p>
                 ${triageHtml}
             </div>
-            <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
+            <div id="section-post-referral" class="bg-blue-50 p-3 rounded-lg border border-blue-100">
                 <h3 class="text-sm font-bold text-blue-950 mb-2 flex items-center gap-1"><i class="fa-solid fa-user-shield text-blue-700"></i> 5. FCBP 於轉介後的可行角色</h3>
                 ${aftercareHtml}
             </div>
