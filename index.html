@@ -1268,9 +1268,9 @@ function openCrisisDetail(crisisKey) {
     data.triage.green.support.forEach(s => {
         const hasUrl = s.url && s.url.trim() !== "";
         greenSupportHtml += `
-            <div class="p-2.5 bg-green-50/60 border border-green-200 rounded-lg flex justify-between items-center gap-3">
-                <div class="flex-1">
-                    <h4 class="font-bold text-green-900 text-xs flex items-center gap-1.5">
+            <div class="p-2.5 bg-green-50/60 border border-green-200 rounded-lg flex flex-col sm:flex-row justify-between items-start gap-3">
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-green-900 text-xs inline-flex items-center gap-1.5 whitespace-nowrap">
                         <i class="fa-solid fa-square-rss text-green-600"></i> ${s.name}
                     </h4>
                     <p class="text-[11px] text-green-800 mt-0.5 leading-relaxed">${s.detail}</p>
@@ -1284,9 +1284,9 @@ function openCrisisDetail(crisisKey) {
     data.triage.yellow.support.forEach(s => {
         const hasUrl = s.url && s.url.trim() !== "";
         yellowSupportHtml += `
-            <div class="p-2.5 bg-yellow-50/60 border border-yellow-200 rounded-lg flex justify-between items-center gap-3">
-                <div class="flex-1">
-                    <h4 class="font-bold text-yellow-900 text-xs flex items-center gap-1.5">
+            <div class="p-2.5 bg-yellow-50/60 border border-yellow-200 rounded-lg flex flex-col sm:flex-row justify-between items-start gap-3">
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-yellow-900 text-xs inline-flex items-center gap-1.5 whitespace-nowrap">
                         <i class="fa-solid fa-hand-holding-hand text-yellow-600"></i> ${s.name}
                     </h4>
                     <p class="text-[11px] text-yellow-800 mt-0.5 leading-relaxed">${s.detail}</p>
@@ -1305,9 +1305,9 @@ function openCrisisDetail(crisisKey) {
         if (crisisKey === 'substance') iconClass = 'fa-solid fa-kit-medical';
         
         redSupportHtml += `
-            <div class="p-2.5 bg-red-50 border border-red-200 rounded-lg shadow-sm flex justify-between items-center gap-3">
-                <div class="flex-1">
-                    <h4 class="font-bold text-red-900 text-xs flex items-center gap-1.5">
+            <div class="p-2.5 bg-red-50 border border-red-200 rounded-lg shadow-sm flex flex-col sm:flex-row justify-between items-start gap-3">
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-red-900 text-xs inline-flex items-center gap-1.5 whitespace-nowrap">
                         <i class="${iconClass} text-red-600 animate-pulse"></i> ${s.name}
                     </h4>
                     <p class="text-[11px] text-red-800 mt-0.5 leading-relaxed font-medium">${s.detail}</p>
@@ -1500,11 +1500,19 @@ function openCrisisDetail(crisisKey) {
 // 🔍 1. 升級原本的跳轉功能：點擊時立刻讓按鈕變色高亮
 function scrollToCrisisSection(sectionId) {
     const element = document.getElementById(sectionId);
-    if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-        // 手動觸發一次變色，確保點擊反應靈敏
-        highlightCrisisNav(sectionId);
-    }
+    const detailPage = document.getElementById('crisisDetailPage');
+    if (!element || !detailPage) return;
+
+    const header = detailPage.querySelector('header.sticky');
+    const navBar = detailPage.querySelector('[class*="top-[calc(env(safe-area-inset-top)+3.2rem)]"]');
+    const offset = (header ? header.offsetHeight : 0) + (navBar ? navBar.offsetHeight : 0) + 12;
+
+    const containerRect = detailPage.getBoundingClientRect();
+    const elementRect = element.getBoundingClientRect();
+    const targetScroll = detailPage.scrollTop + (elementRect.top - containerRect.top) - offset;
+
+    detailPage.scrollTo({ top: targetScroll, behavior: 'smooth' });
+    highlightCrisisNav(sectionId);
 }
 
 // 🔍 2. 新增核心變色控制：定義高亮樣式與普通樣式
