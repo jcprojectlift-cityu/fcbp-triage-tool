@@ -1352,20 +1352,20 @@ function openCrisisDetail(crisisKey) {
     document.getElementById('crisisDetailContent').innerHTML = `
         
         <div class="sticky top-[calc(env(safe-area-inset-top)+3.2rem)] bg-slate-900 text-white -mx-4 md:mx-0 px-4 py-2.5 mb-5 shadow-md z-40 flex gap-2 overflow-x-auto scrollbar-none whitespace-nowrap md:rounded-xl border border-slate-800">
-            <button onclick="scrollToCrisisSection('sec-concept')" class="text-[11px] bg-slate-800 hover:bg-indigo-600 px-3 py-1.5 rounded-full transition-colors font-medium cursor-pointer">
+            <button id="btn-sec-concept" onclick="scrollToCrisisSection('sec-concept')" class="crisis-nav-btn text-[11px] bg-indigo-600 font-bold border border-indigo-400/30 px-3 py-1.5 rounded-full transition-all cursor-pointer">
                 <i class="fa-solid fa-lightbulb mr-1"></i>基本概念
             </button>
-            <button onclick="scrollToCrisisSection('sec-pre')" class="text-[11px] bg-slate-800 hover:bg-indigo-600 px-3 py-1.5 rounded-full transition-colors font-medium cursor-pointer">
+            <button id="btn-sec-pre" onclick="scrollToCrisisSection('sec-pre')" class="crisis-nav-btn text-[11px] bg-slate-800 text-slate-300 px-3 py-1.5 rounded-full transition-all cursor-pointer">
                 <i class="fa-solid fa-clipboard-question mr-1"></i>轉介前準備
             </button>
-            <button onclick="scrollToCrisisSection('sec-risk')" class="text-[11px] bg-slate-800 hover:bg-indigo-600 px-3 py-1.5 rounded-full transition-colors font-medium cursor-pointer">
+            <button id="btn-sec-risk" onclick="scrollToCrisisSection('sec-risk')" class="crisis-nav-btn text-[11px] bg-slate-800 text-slate-300 px-3 py-1.5 rounded-full transition-all cursor-pointer">
                 <i class="fa-solid fa-triangle-exclamation mr-1"></i>風險辨識
             </button>
-            <button onclick="scrollToCrisisSection('sec-triage')" class="text-[11px] bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-full transition-colors font-bold border border-indigo-400/30 cursor-pointer">
+            <button id="btn-sec-triage" onclick="scrollToCrisisSection('sec-triage')" class="crisis-nav-btn text-[11px] bg-slate-800 text-slate-300 px-3 py-1.5 rounded-full transition-all cursor-pointer">
                 <i class="fa-solid fa-arrows-split-up-and-left mr-1"></i>分流與介入
             </button>
-            <button onclick="scrollToCrisisSection('sec-after')" class="text-[11px] bg-slate-800 hover:bg-indigo-600 px-3 py-1.5 rounded-full transition-colors font-medium cursor-pointer">
-                <i class="fa-solid fa-handshake-angle mr-1"></i>轉介後跟进
+            <button id="btn-sec-after" onclick="scrollToCrisisSection('sec-after')" class="crisis-nav-btn text-[11px] bg-slate-800 text-slate-300 px-3 py-1.5 rounded-full transition-all cursor-pointer">
+                <i class="fa-solid fa-handshake-angle mr-1"></i>轉介後跟進
             </button>
         </div>
 
@@ -1466,15 +1466,63 @@ function openCrisisDetail(crisisKey) {
         ${OFFICIAL_FOOTER_HTML}
     `;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // 🎯 5. 啟動黃金觀測器：當內容卡片進入視窗中央時，自動讓上方導覽列變色
+    setTimeout(() => {
+        const sections = ['sec-concept', 'sec-pre', 'sec-risk', 'sec-triage', 'sec-after'];
+        
+        // 建立高效率觀測對象
+        const observerOptions = {
+            root: null,
+            // 觀測判定線：設定在距離螢幕頂部 35% 到 底部 60% 的黃金區間
+            rootMargin: '-35% 0px -60% 0px',
+            threshold: 0
+        };
+
+        const crisisObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                // 當特定區塊滾動進入我們的黃金觸發範圍時
+                if (entry.isIntersecting) {
+                    highlightCrisisNav(entry.target.id);
+                }
+            });
+        }, observerOptions);
+
+        // 開始監聽這 5 個白盒區塊
+        sections.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) crisisObserver.observe(el);
+        });
+    }, 100);
 }
 
 // 🔍 請將此函式新增至 <script> 的全域範圍中：
+// 🔍 1. 升級原本的跳轉功能：點擊時立刻讓按鈕變色高亮
 function scrollToCrisisSection(sectionId) {
     const element = document.getElementById(sectionId);
     if (element) {
-        // 使用 behavior: 'smooth' 實現絲滑的平滑滾動效果
         element.scrollIntoView({ behavior: 'smooth' });
+        // 手動觸發一次變色，確保點擊反應靈敏
+        highlightCrisisNav(sectionId);
     }
+}
+
+// 🔍 2. 新增核心變色控制：定義高亮樣式與普通樣式
+// 🔍 請用這段「全域一秒切換」的完全體代碼，直接覆蓋原本的 highlightCrisisNav 函式：
+function highlightCrisisNav(activeSectionId) {
+    // 1. 先抓取目前詳細頁面上，帶有 .crisis-nav-btn 類別的所有按鈕
+    const buttons = document.querySelectorAll('.crisis-nav-btn');
+    
+    buttons.forEach(btn => {
+        // 2. 檢查按鈕的 id 是否與當前啟動的段落 (btn-sec-...) 完美對應
+        if (btn.id === `btn-${activeSectionId}`) {
+            // 🔥 【啟動高亮】任何被點擊或滾動到的按鈕，立刻染成深藍紫色、粗體、白字、帶邊框
+            btn.className = "crisis-nav-btn text-[11px] bg-indigo-600 text-white font-bold border border-indigo-400/30 px-3 py-1.5 rounded-full transition-all cursor-pointer";
+        } else {
+            // 🧊 【其餘退色】非當前選中的其餘所有按鈕，無例外全部退回深灰底、灰字、無邊框的暗色狀態
+            btn.className = "crisis-nav-btn text-[11px] bg-slate-800 text-slate-300 px-3 py-1.5 rounded-full transition-all cursor-pointer";
+        }
+    });
 }
 
 // 7.6 危機詳細內頁返回危機主選單（同步解除 Style）
