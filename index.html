@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FCBP 個案分流框架</title>
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FCBP分流工具">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -54,29 +63,38 @@
         </div>
 
         <div class="space-y-4">
-            
-            <button onclick="selectTriage('general')" class="w-full p-4 bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-xl flex items-center shadow-sm transition duration-200 cursor-pointer text-left">
-                <div class="bg-blue-500 text-white p-3 rounded-lg mr-4 shrink-0">
-                    <i class="fa-solid fa-folder-open text-xl w-6 text-center"></i>
+            <button onclick="startDecisionChart()" class="w-full p-4 bg-indigo-50 hover:bg-indigo-100 border-2 border-indigo-200 rounded-xl flex items-center shadow-sm transition duration-200 cursor-pointer text-left">
+                <div class="bg-indigo-500 text-white p-3 rounded-lg mr-4 shrink-0">
+                    <i class="fa-solid fa-route text-xl w-6 text-center"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-blue-900 text-base">一般個案類型</h3>
-                    <p class="text-xs text-blue-700 mt-0.5">喪親家庭、照顧者支援、賭博問題、工傷等</p>
+                    <h3 class="font-bold text-indigo-900 text-base">分流判定指南 (互動版)</h3>
+                    <p class="text-xs text-indigo-700 mt-0.5">不確定類型？跟隨引導進行初步判定</p>
                 </div>
             </button>
 
-            <button onclick="selectTriage('crisis')" class="w-full p-4 bg-red-50 hover:bg-red-100 border-2 border-red-200 rounded-xl flex items-center shadow-sm transition duration-200 cursor-pointer text-left">
-                <div class="bg-red-500 text-white p-3 rounded-lg mr-4 shrink-0">
-                    <i class="fa-solid fa-triangle-exclamation text-xl w-6 text-center"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-red-900 text-base">危機個案狀況</h3>
-                    <p class="text-xs text-red-700 mt-0.5">涉及精神或情緒問題、自殺或傷害自己、家庭暴力或物質濫用事件</p>
-                </div>
-            </button>
+            <div class="grid grid-cols-1 gap-4">
+                <button onclick="selectTriage('general')" class="w-full p-4 bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-xl flex items-center shadow-sm transition duration-200 cursor-pointer text-left">
+                    <div class="bg-blue-500 text-white p-3 rounded-lg mr-4 shrink-0">
+                        <i class="fa-solid fa-folder-open text-xl w-6 text-center"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-blue-900 text-base">直接進入：一般個案</h3>
+                        <p class="text-xs text-blue-700 mt-0.5">喪親、照顧者、賭博、工傷指引</p>
+                    </div>
+                </button>
 
+                <button onclick="selectTriage('crisis')" class="w-full p-4 bg-red-50 hover:bg-red-100 border-2 border-red-200 rounded-xl flex items-center shadow-sm transition duration-200 cursor-pointer text-left">
+                    <div class="bg-red-500 text-white p-3 rounded-lg mr-4 shrink-0">
+                        <i class="fa-solid fa-triangle-exclamation text-xl w-6 text-center"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-red-900 text-base">直接進入：危機個案</h3>
+                        <p class="text-xs text-red-700 mt-0.5">涉及精神、自殺、家暴或虐兒</p>
+                    </div>
+                </button>
+            </div>
         </div>
-
     </div>
 </div>
 
@@ -139,6 +157,142 @@
     </header>
     <main id="crisisDetailContent" class="max-w-md w-full mx-auto p-4 pb-20 lg:max-w-5xl lg:px-6">
         </main>
+</div>
+
+<div id="decisionChartPage" class="fixed inset-0 bg-gray-100 z-[9995] flex flex-col hidden overflow-y-auto">
+    <header class="bg-indigo-700 text-white p-4 shadow-md sticky top-0 flex items-center gap-3">
+        <button onclick="backToTriageFromChart()" class="text-white hover:text-indigo-200 cursor-pointer text-lg"><i class="fa-solid fa-house"></i></button>
+        <h1 class="text-lg font-bold">分流判定指南</h1>
+    </header>
+    
+    <main class="max-w-md w-full mx-auto p-4 py-8 flex-1 flex flex-col justify-center">
+        
+        <div id="step-1" class="decision-step space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-xl border-t-8 border-indigo-500 text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full mb-4">
+                    <i class="fa-solid fa-magnifying-glass text-2xl"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">辨識初步情況</h2>
+                <p class="text-gray-600">相關情況及需要是否<br><span class="font-bold text-red-600">牽涉危機情況？</span></p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <button onclick="processDecision('yes')" class="p-6 bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg transition transform active:scale-95 flex flex-col items-center">
+                    <span class="text-2xl font-black mb-1">是</span>
+                    <span class="text-xs opacity-90">涉及精神/自殺/暴力等風險</span>
+                </button>
+                <button onclick="processDecision('no')" class="p-6 bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg transition transform active:scale-95 flex flex-col items-center">
+                    <span class="text-xl font-black mb-1">現階段尚未涉及</span>
+                    <span class="text-xs opacity-90">傾向一般民生或支援需要</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="step-crisis-route" class="decision-step hidden space-y-6">
+            <div class="bg-red-50 p-6 rounded-2xl border-2 border-red-500 shadow-xl text-center">
+                <div class="text-red-600 text-5xl mb-4"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <h2 class="text-2xl font-bold text-red-900 mb-2">必須匯報</h2>
+                <p class="text-red-700 font-medium mb-4">必須向上級或督導匯報情況！</p>
+                <div class="bg-white p-4 rounded-lg text-sm text-gray-600 text-left border border-red-200">
+                    <p>參考相關個案細分種類：</p>
+                    <ul class="list-disc pl-5 mt-2 space-y-1">
+                        <li>精神或情緒問題</li>
+                        <li>自殺或傷害自己</li>
+                        <li>親密伴侶暴力/虐兒</li>
+                    </ul>
+                </div>
+            </div>
+            <button onclick="selectTriage('crisis')" class="w-full py-4 bg-red-600 text-white rounded-xl font-bold shadow-lg flex items-center justify-center gap-2">
+                進入危機個案指引 <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <button onclick="resetDecisionChart()" class="w-full text-gray-500 text-sm py-2">重新選擇 <i class="fa-solid fa-rotate-left ml-1"></i></button>
+        </div>
+
+        <div id="step-general-route" class="decision-step hidden space-y-6">
+            <div class="bg-green-50 p-6 rounded-2xl border-2 border-green-500 shadow-xl">
+                <div class="text-center mb-4">
+                    <div class="text-green-600 text-5xl mb-2"><i class="fa-solid fa-circle-check"></i></div>
+                    <h2 class="text-2xl font-bold text-green-900 mb-2">了解街坊服務需要種類及類別</h2>
+                    <p class="text-green-700 font-medium text-sm">請選擇街坊需要對應的服務分類</p>
+                </div>
+                
+                <div class="grid grid-cols-1 gap-2 text-left max-h-[400px] overflow-y-auto">
+                    <button onclick="selectServiceCategory('elderly')" class="p-3 bg-white border border-green-200 rounded-lg flex justify-between items-center hover:bg-green-50 transition">
+                        <div class="flex-1 text-left">
+                            <span class="text-sm font-bold text-gray-800 block">1. 與長者相關</span>
+                            <span class="text-xs text-gray-600">長期照顧服務、長者社區活動、隱蔽長者服務、護老者支援</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-gray-400 ml-2 shrink-0"></i>
+                    </button>
+                    <button onclick="selectServiceCategory('mental')" class="p-3 bg-white border border-green-200 rounded-lg flex justify-between items-center hover:bg-green-50 transition">
+                        <div class="flex-1 text-left">
+                            <span class="text-sm font-bold text-gray-800 block">2. 與精神健康相關</span>
+                            <span class="text-xs text-gray-600">偶到服務、外展支援、個案輔導服務、活動及小組等</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-gray-400 ml-2 shrink-0"></i>
+                    </button>
+                    <button onclick="selectServiceCategory('disability')" class="p-3 bg-white border border-green-200 rounded-lg flex justify-between items-center hover:bg-green-50 transition">
+                        <div class="flex-1 text-left">
+                            <span class="text-sm font-bold text-gray-800 block">3. 與殘疾人士相關</span>
+                            <span class="text-xs text-gray-600">小組/個人訓練及支援，提供支援服務予照顧者</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-gray-400 ml-2 shrink-0"></i>
+                    </button>
+                    <button onclick="selectServiceCategory('foodaid')" class="p-3 bg-white border border-green-200 rounded-lg flex justify-between items-center hover:bg-green-50 transition">
+                        <div class="flex-1 text-left">
+                            <span class="text-sm font-bold text-gray-800 block">4. 與食物援助相關</span>
+                            <span class="text-xs text-gray-600">提供短期食物援助(8星期) *不適用於綜援家庭</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-gray-400 ml-2 shrink-0"></i>
+                    </button>
+                    <button onclick="selectServiceCategory('youth')" class="p-3 bg-white border border-green-200 rounded-lg flex justify-between items-center hover:bg-green-50 transition">
+                        <div class="flex-1 text-left">
+                            <span class="text-sm font-bold text-gray-800 block">5. 與兒童及青少年相關</span>
+                            <span class="text-xs text-gray-600">ICYSC: 小組及活動、輔導 SSW/SGT: 管教、學業、親子關係</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-gray-400 ml-2 shrink-0"></i>
+                    </button>
+                    <button onclick="selectServiceCategory('healthcare')" class="p-3 bg-white border border-green-200 rounded-lg flex justify-between items-center hover:bg-green-50 transition">
+                        <div class="flex-1 text-left">
+                            <span class="text-sm font-bold text-gray-800 block">6. 與公營醫療相關</span>
+                            <span class="text-xs text-gray-600">於公立醫院有定期覆診者申請社區資源、醫療費用減免</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-gray-400 ml-2 shrink-0"></i>
+                    </button>
+                    <button onclick="selectServiceCategory('family')" class="p-3 bg-white border border-green-200 rounded-lg flex justify-between items-center hover:bg-green-50 transition">
+                        <div class="flex-1 text-left">
+                            <span class="text-sm font-bold text-gray-800 block">7. 與家庭相關</span>
+                            <span class="text-xs text-gray-600">家庭輔導 (婚姻、關係、管教等)、包底式的社會服務支援</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-gray-400 ml-2 shrink-0"></i>
+                    </button>
+                </div>
+            </div>
+            <button onclick="resetDecisionChart()" class="w-full text-gray-500 text-sm py-2">重新選擇 <i class="fa-solid fa-rotate-left ml-1"></i></button>
+        </div>
+
+        <div id="step-service-details" class="decision-step hidden space-y-6">
+            <div class="bg-blue-50 p-6 rounded-2xl border-2 border-blue-500 shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <button onclick="backToServiceCategories()" class="text-blue-600 hover:text-blue-800 font-bold text-sm flex items-center gap-1">
+                        <i class="fa-solid fa-chevron-left"></i> 返回
+                    </button>
+                    <h2 id="serviceCategoryTitle" class="text-2xl font-bold text-blue-900 flex-1 text-center">服務分類</h2>
+                    <div class="w-16"></div>
+                </div>
+                
+                <div id="serviceDetailsList" class="space-y-3 max-h-[300px] overflow-y-auto">
+                    <!-- 服務單位將動態插入這裡 -->
+                </div>
+            </div>
+            <button onclick="selectTriage('general')" class="w-full py-4 bg-blue-600 text-white rounded-xl font-bold shadow-lg flex items-center justify-center gap-2">
+                瀏覽全體一般個案指引 <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+    </main>
+    
+    <div class="general-footer-placeholder"></div>
 </div>
 
 <header id="generalHeader" class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
@@ -211,7 +365,7 @@
             JC PROJECT LIFT — 前線個案指引工具
         </div>
         <div class="text-[10px] text-amber-400 font-medium">
-            最後更新日期：2026年06月12日
+            最後更新日期：2026年06月20日
         </div>
         <p class="text-[9px] text-slate-500 leading-relaxed max-w-xs mx-auto pt-2 border-t border-slate-700/50">
             本提示系統所載資料僅供內部參考及教育用途，並不構成任何專業醫療或心理治療建議。
@@ -705,11 +859,12 @@ function selectTriage(type) {
     const triagePage = document.getElementById('triagePage');
     const crisisMenu = document.getElementById('crisisMainMenu');
     const crisisDetail = document.getElementById('crisisDetailPage');
+    const decisionChartPage = document.getElementById('decisionChartPage');
     const genHeader = document.getElementById('generalHeader');
     const genMain = document.getElementById('generalMain');
     
     // 【強力清空】第一步：強制把所有人的兩種隱藏模式（Class 與 Style）通通啟動
-    const allPages = [triagePage, crisisMenu, crisisDetail, genHeader, genMain];
+    const allPages = [triagePage, crisisMenu, crisisDetail, decisionChartPage, genHeader, genMain];
     allPages.forEach(page => {
         if (page) {
             page.classList.add('hidden');          // 處理 Tailwind 的 hidden
@@ -1019,6 +1174,158 @@ function backToCrisisMenu() {
         crisisMenu.style.display = 'flex'; // 恢復危機選單的全螢幕 flex 佈局
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// --- 決策流程 (Decision Chart) 控制 ---
+
+function startDecisionChart() {
+    // 隱藏主分流頁
+    document.getElementById('triagePage').classList.add('hidden');
+    document.getElementById('triagePage').style.display = 'none';
+    
+    // 顯示決策頁
+    const chartPage = document.getElementById('decisionChartPage');
+    chartPage.classList.remove('hidden');
+    chartPage.style.display = 'flex';
+    
+    resetDecisionChart();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetDecisionChart() {
+    // 隱藏所有步驟
+    document.querySelectorAll('.decision-step').forEach(step => {
+        step.classList.add('hidden');
+    });
+    // 顯示第一步
+    document.getElementById('step-1').classList.remove('hidden');
+}
+
+function processDecision(choice) {
+    // 先隱藏第一步
+    document.getElementById('step-1').classList.add('hidden');
+    
+    if (choice === 'yes') {
+        // 走危機路徑
+        document.getElementById('step-crisis-route').classList.remove('hidden');
+    } else {
+        // 走一般路徑
+        document.getElementById('step-general-route').classList.remove('hidden');
+    }
+}
+
+function backToTriageFromChart() {
+    document.getElementById('decisionChartPage').classList.add('hidden');
+    document.getElementById('decisionChartPage').style.display = 'none';
+    
+    const triagePage = document.getElementById('triagePage');
+    triagePage.classList.remove('hidden');
+    triagePage.style.display = 'flex';
+}
+
+function goToGeneralFromChart(catKey) {
+    // 關閉決策頁並進入一般個案介面
+    document.getElementById('decisionChartPage').classList.add('hidden');
+    document.getElementById('decisionChartPage').style.display = 'none';
+    
+    selectTriage('general');
+    
+    // 如果是 mental 或 carer 等，雖然在危機模組有，但這裡導向一般個案的對應分類
+    // 如果 catKey 是 mental，我們導向 carer 作為範例，或你可以擴充一般個案的資料庫
+    if (appData[catKey]) {
+        switchCategory(catKey);
+    }
+}
+
+// ==========================================
+// 🎯 服務分類與轉介單位資料庫
+// ==========================================
+const serviceCategories = {
+    elderly: {
+        title: "與長者相關",
+        units: [
+            { name: "長者地區中心 (DECC)", shortName: "DECC", url: "https://www.swd.gov.hk/tc/pubsvc/elderly/cat_commsupp/elderly_centres/" },
+            { name: "長者鄰舍中心 (NEC)", shortName: "NEC", url: "https://www.swd.gov.hk/tc/pubsvc/elderly/cat_commsupp/elderly_centres/" }
+        ]
+    },
+    mental: {
+        title: "與精神健康相關",
+        units: [
+            { name: "精神健康綜合社區中心 (ICCMW)", shortName: "ICCMW", url: "https://www.swd.gov.hk/tc/pubsvc/rehab/cat_supportcom/centrebase/iccmw/" }
+        ]
+    },
+    disability: {
+        title: "與殘疾人士相關",
+        units: [
+            { name: "殘疾人士地區支援中心 (DSC)", shortName: "DSC", url: "https://www.swd.gov.hk/tc/pubsvc/rehab/cat_supportcom/centrebase/dsc/" }
+        ]
+    },
+    foodaid: {
+        title: "與食物援助相關",
+        units: [
+            { name: "短期食物援助計劃", shortName: "短期食物援助", url: "https://www.swd.gov.hk/tc/pubsvc/family/cat_support/foodassist/" }
+        ]
+    },
+    youth: {
+        title: "與兒童及青少年相關",
+        units: [
+            { name: "綜合青少年服務中心 (ICYSC)", shortName: "ICYSC", url: "https://www.swd.gov.hk/tc/pubsvc/family/cat_youthcentre/icysc/" },
+            { name: "學前單位社工服務", shortName: "PPI", url: "https://www.swd.gov.hk/tc/pubsvc/family/cat_childcareservice/ppi/index.html" },
+            { name: "小學社工或輔導老師", shortName: "SGT", url: "https://www.edb.gov.hk/tc/teacher/student-guidance-discipline-services/projects-services/sgs/index.html" },
+            { name: "中學社工", shortName: "SSW", url: "https://www.swd.gov.hk/tc/pubsvc/young/cat_young/schoolsoci/index.html" }
+        ]
+    },
+    healthcare: {
+        title: "與公營醫療相關",
+        units: [
+            { name: "醫務社工 (MSSU)", shortName: "MSSU", url: "https://www.swd.gov.hk/tc/pubsvc/medical/cat_medical/" }
+        ]
+    },
+    family: {
+        title: "與家庭相關",
+        units: [
+            { name: "綜合家庭服務中心 (IFSC)", shortName: "IFSC", url: "https://www.swd.gov.hk/tc/pubsvc/family/cat_family/ifs/" }
+        ]
+    }
+};
+
+function selectServiceCategory(categoryKey) {
+    // 隱藏分類列表
+    document.getElementById('step-general-route').classList.add('hidden');
+    // 顯示詳細資訊
+    document.getElementById('step-service-details').classList.remove('hidden');
+    
+    const category = serviceCategories[categoryKey];
+    const title = document.getElementById('serviceCategoryTitle');
+    const detailsList = document.getElementById('serviceDetailsList');
+    
+    // 更新標題
+    title.textContent = category.title;
+    
+    // 渲染轉介單位列表
+    detailsList.innerHTML = '';
+    category.units.forEach((unit, index) => {
+        const hasUrl = unit.url && unit.url.trim() !== '';
+        const unitHtml = `
+            <div class="p-3 bg-white border border-blue-200 rounded-lg flex justify-between items-center gap-2 hover:bg-blue-50 transition">
+                <div class="flex-1 text-left">
+                    <h3 class="font-bold text-gray-800 text-sm">${unit.name}</h3>
+                    <span class="text-xs text-gray-500">${unit.shortName}</span>
+                </div>
+                ${hasUrl ? `<a href="${unit.url}" target="_blank" class="shrink-0 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded transition flex items-center gap-1">
+                    <i class="fa-solid fa-globe"></i> 網站
+                </a>` : `<span class="shrink-0 px-3 py-1.5 bg-gray-200 text-gray-600 text-xs font-bold rounded">待補充</span>`}
+            </div>
+        `;
+        detailsList.innerHTML += unitHtml;
+    });
+}
+
+function backToServiceCategories() {
+    // 隱藏詳細資訊
+    document.getElementById('step-service-details').classList.add('hidden');
+    // 顯示分類列表
+    document.getElementById('step-general-route').classList.remove('hidden');
 }
 
 // ==========================================
