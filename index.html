@@ -1318,6 +1318,62 @@ function backToServiceCategories() {
     document.getElementById('step-general-route').classList.remove('hidden');
 }
 
+function handleSwipeRightNavigation() {
+    const decisionChart = document.getElementById('decisionChartPage');
+    const crisisDetail = document.getElementById('crisisDetailPage');
+    const generalHeader = document.getElementById('generalHeader');
+    const serviceDetails = document.getElementById('step-service-details');
+
+    if (serviceDetails && !serviceDetails.classList.contains('hidden')) {
+        backToServiceCategories();
+        return;
+    }
+
+    if (crisisDetail && !crisisDetail.classList.contains('hidden')) {
+        backToCrisisMenu();
+        return;
+    }
+
+    if (generalHeader && !generalHeader.classList.contains('hidden')) {
+        backToTriageFromGeneral();
+        return;
+    }
+
+    if (decisionChart && !decisionChart.classList.contains('hidden')) {
+        backToTriageFromChart();
+        return;
+    }
+}
+
+function initSwipeGestureNavigation() {
+    let touchStartX = null;
+    let touchStartY = null;
+
+    document.addEventListener('touchstart', event => {
+        if (!event.changedTouches || event.changedTouches.length === 0) return;
+        const touch = event.changedTouches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', event => {
+        if (touchStartX === null || !event.changedTouches || event.changedTouches.length === 0) return;
+        const touch = event.changedTouches[0];
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+
+        const swipeThreshold = 80;
+        const verticalLimit = 100;
+
+        if (deltaX > swipeThreshold && Math.abs(deltaY) < verticalLimit) {
+            handleSwipeRightNavigation();
+        }
+
+        touchStartX = null;
+        touchStartY = null;
+    }, { passive: true });
+}
+
 // ==========================================
 // 🚀 網頁初始化：自動為所有一般個案分頁灌錄標準 Footer
 // ==========================================
@@ -1329,6 +1385,8 @@ document.addEventListener("DOMContentLoaded", function() {
     placeholders.forEach(box => {
         box.innerHTML = OFFICIAL_FOOTER_HTML;
     });
+
+    initSwipeGestureNavigation();
 });
 
     </script>
