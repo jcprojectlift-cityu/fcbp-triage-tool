@@ -17,6 +17,7 @@
         }
 
         * {
+            box-shadow: none;
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -26,7 +27,7 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding: 15px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -35,21 +36,21 @@
 
         header {
             text-align: center;
-            margin-bottom: 20px;
-            max-width: 600px;
+            margin-bottom: 15px;
+            max-width: 650px;
             width: 100%;
         }
 
         h1 {
             color: var(--primary-color);
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 900;
             margin-bottom: 5px;
             letter-spacing: 1px;
         }
 
         p.subtitle {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             color: #666;
             line-height: 1.4;
         }
@@ -60,9 +61,9 @@
             align-items: center;
             width: 100%;
             max-width: 650px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             background: white;
-            padding: 10px 15px;
+            padding: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
@@ -70,17 +71,18 @@
         .bingo-status {
             font-weight: bold;
             color: var(--secondary-color);
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         button.reset-btn {
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 0.85rem;
             transition: background-color 0.2s;
         }
 
@@ -91,7 +93,7 @@
         .bingo-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+            gap: 6px;
             width: 100%;
             max-width: 650px;
             margin-bottom: 25px;
@@ -99,24 +101,21 @@
 
         .bingo-cell {
             background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px 10px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 4px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 150px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+            min-height: 140px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
             transition: all 0.3s ease;
             position: relative;
-            overflow: hidden;
         }
 
         .bingo-cell.active {
             border-color: var(--success-color);
             background-color: #eafbf9;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(46, 196, 182, 0.15);
         }
 
         .bingo-cell.bingo-highlight {
@@ -126,14 +125,14 @@
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 5px rgba(241, 140, 34, 0.4); }
-            100% { box-shadow: 0 0 15px rgba(241, 140, 34, 0.8); }
+            0% { box-shadow: 0 0 3px rgba(241, 140, 34, 0.4); }
+            100% { box-shadow: 0 0 10px rgba(241, 140, 34, 0.7); }
         }
 
         .cell-content {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 700;
-            line-height: 1.4;
+            line-height: 1.3;
             text-align: center;
             color: #2c3e50;
             word-break: break-all;
@@ -141,25 +140,24 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
+            padding: 0 2px;
         }
 
         .input-container {
             width: 100%;
-            position: relative;
         }
 
         .input-container input {
             width: 100%;
-            padding: 8px 10px;
+            padding: 6px 4px;
             border: 1px dashed #bbb;
-            border-radius: 6px;
+            border-radius: 4px;
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: bold;
             color: var(--primary-color);
             background-color: #fafafa;
-            transition: all 0.2s;
         }
 
         .input-container input:focus {
@@ -198,13 +196,13 @@
 
         .overlay-content h2 {
             color: var(--secondary-color);
-            font-size: 2.5rem;
+            font-size: 2.3rem;
             margin-bottom: 10px;
             font-weight: 900;
         }
 
         .overlay-content p {
-            font-size: 1.1rem;
+            font-size: 1rem;
             margin-bottom: 20px;
             line-height: 1.5;
         }
@@ -226,12 +224,16 @@
             to { opacity: 1; }
         }
 
-        @media (max-width: 500px) {
-            .bingo-grid {
-                grid-template-columns: repeat(2, 1fr);
+        @media (max-width: 360px) {
+            .cell-content {
+                font-size: 0.68rem;
+            }
+            .input-container input {
+                font-size: 0.68rem;
+                padding: 4px 2px;
             }
             .bingo-cell {
-                min-height: 140px;
+                min-height: 120px;
             }
         }
     </style>
@@ -248,6 +250,11 @@
         <button class="reset-btn" onclick="confirmReset()">重設表格</button>
     </div>
 
+    <!-- HTML5 Datalist 資料庫：儲存所有出席 FCBP 名字 -->
+    <datalist id="fcbp-names">
+        <!-- 名字資料庫將透過 JavaScript 自動動態載入 -->
+    </datalist>
+
     <div class="bingo-grid" id="bingo-board"></div>
 
     <div class="overlay" id="bingo-overlay">
@@ -259,7 +266,15 @@
     </div>
 
     <script>
-        // 原始16格數據
+        // 出席同工名單資料庫
+        const fcbpDatabase = [
+            "Winnie", "Benjamin", "Vanessa", "Derrick", "忠", "Oscar", "Heyman", 
+            "Ting", "Jason", "Yu", "Marcos", "Ken", "Hilda", "Ka Chun", "Chloe", 
+            "Virginia", "Leo", "Billy", "Alison", "Patrick", "Suki", "Ruby", "Bill", 
+            "Harrison", "Bobo", "On", "Theresa", "Pui", "May L", "Yuet", "Adrian", 
+            "Fung", "Ying", "Coco", "Lemon", "Melody", "May C", "Crystal", "Jerry", "Eva"
+        ];
+
         const baseItems = [
             "最近三個月先入職",
             "鍥而不捨地搵街坊",
@@ -279,7 +294,6 @@
             "其他成功經驗："
         ];
 
-        // 4x4 連線組合
         const winningCombinations = [
             [0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15], // 橫
             [0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15], // 直
@@ -287,10 +301,20 @@
         ];
 
         let shuffledItems = [];
-        let savedData = {}; // 格式為 { "題目文本": "填入的名字" }
+        let savedData = {}; 
         let hasAlertedBingo = false;
 
-        // 隨機打亂陣列函數 (Fisher-Yates Shuffle)
+        // 初始化名單下拉選單
+        function initDatabase() {
+            const datalist = document.getElementById("fcbp-names");
+            datalist.innerHTML = "";
+            fcbpDatabase.forEach(name => {
+                const option = document.createElement("option");
+                option.value = name;
+                datalist.appendChild(option);
+            });
+        }
+
         function shuffle(array) {
             let currentIndex = array.length, randomIndex;
             while (currentIndex != 0) {
@@ -301,18 +325,13 @@
             return array;
         }
 
-        // 初始化資料管理
         function initData() {
-            // 複製並打亂題目
             shuffledItems = shuffle([...baseItems]);
-
-            // 讀取本地快取
             if (localStorage.getItem("lift_bingo_v2_data")) {
                 savedData = JSON.parse(localStorage.getItem("lift_bingo_v2_data"));
             }
         }
 
-        // 渲染表格
         const board = document.getElementById("bingo-board");
         
         function renderBoard() {
@@ -331,8 +350,9 @@
 
                 const input = document.createElement("input");
                 input.type = "text";
-                input.placeholder = "輸入同工姓名...";
-                input.value = savedData[text] || ""; // 以「文本」為 Key 讀取資料
+                input.placeholder = "輸入姓名...";
+                input.setAttribute("list", "fcbp-names"); // 綁定下拉選單資料庫
+                input.value = savedData[text] || ""; 
                 
                 input.addEventListener("input", (e) => {
                     updateName(text, index, e.target.value);
@@ -350,9 +370,8 @@
             checkBingo(false);
         }
 
-        // 更新輸入的名字
         function updateName(text, index, value) {
-            savedData[text] = value; // 以「文本」作 Key 儲存，刷新隨機換位置後名字也不會錯亂
+            savedData[text] = value; 
             localStorage.setItem("lift_bingo_v2_data", JSON.stringify(savedData));
 
             const cell = document.getElementById(`cell-${index}`);
@@ -365,7 +384,6 @@
             checkBingo(true);
         }
 
-        // 檢查連線
         function checkBingo(shouldTriggerAlert) {
             let bingoCount = 0;
             const highlightedCells = new Set();
@@ -382,7 +400,6 @@
                 }
             });
 
-            // 更新格子高亮狀態
             for (let i = 0; i < 16; i++) {
                 const cell = document.getElementById(`cell-${i}`);
                 if (cell) {
@@ -420,7 +437,8 @@
             }
         }
 
-        // 執行遊戲
+        // 啟動執行
+        initDatabase();
         initData();
         renderBoard();
     </script>
