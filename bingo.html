@@ -111,16 +111,14 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.04);
             transition: all 0.2s ease;
             position: relative;
-            cursor: pointer; /* 讓整格看起來可以點擊 */
+            cursor: pointer;
         }
 
-        /* 輸入名字後的狀態 (綠色邊框) */
         .bingo-cell.has-name {
             border-color: var(--success-color);
             background-color: #eafbf9;
         }
 
-        /* 抽中後點擊翻牌的狀態 (橘色高亮) */
         .bingo-cell.drawn {
             border-color: var(--secondary-color) !important;
             background-color: #fff4e6 !important;
@@ -128,7 +126,6 @@
             box-shadow: inset 0 0 8px rgba(241, 140, 34, 0.2);
         }
 
-        /* 在被抽中的格子右上角加上小剔號 */
         .bingo-cell.drawn::after {
             content: "🎯";
             position: absolute;
@@ -150,7 +147,7 @@
             justify-content: center;
             margin-bottom: 6px;
             padding: 0 2px;
-            pointer-events: none; /* 防止干擾格子點擊事件 */
+            pointer-events: none;
         }
 
         .input-container {
@@ -198,11 +195,10 @@
     </header>
 
     <div class="controls">
-        <div class="game-instruction">💡 玩法：填好名字後，當主持抽中該同工時點擊格子翻牌！</div>
+        <div class="game-instruction">💡 玩法：每格名字不能重複。抽中同工時，輕點格子即可翻牌！</div>
         <button class="reset-btn" onclick="confirmReset()">重設表格</button>
     </div>
 
-    <!-- HTML5 Datalist 名單資料庫 -->
     <datalist id="fcbp-names">
         <!-- 透過 JS 自動載入 -->
     </datalist>
@@ -227,7 +223,7 @@
             "曾用街坊感興趣的話題成功打開話題",
             "曾協助街坊疏解他們對「上樓」或「綜援」的福利顧慮",
             "用簡單的圖卡或自製工具與街坊溝通",
-            "用 WhatsApp 等方法簡單接触、提醒及關心街坊",
+            "用 WhatsApp 等方法簡單接觸、提醒及關心街坊",
             "成功介紹自己令街坊明白 FCBP 是什麼角色",
             "街坊由態度冷淡變為會主動找 FCBP 傾談",
             "記得所有自己負責之家庭個案的稱呼",
@@ -240,7 +236,7 @@
 
         let shuffledItems = [];
         let savedNames = {};   // { "題目文本": "填入的名字" }
-        let drawnStatus = {};  // { "題目文本": true/false (是否被抽中點選) }
+        let drawnStatus = {};  // { "題目文本": true/false }
 
         function initDatabase() {
             const datalist = document.getElementById("fcbp-names");
@@ -282,9 +278,7 @@
                 cell.className = "bingo-cell";
                 cell.id = `cell-${index}`;
 
-                // 點擊格子切換「被抽中/未抽中」狀態
                 cell.addEventListener("click", (e) => {
-                    // 如果點擊的是輸入框本身，則不觸發翻牌切換
                     if (e.target.tagName === "INPUT") return;
                     toggleDrawn(text, cell);
                 });
@@ -302,8 +296,8 @@
                 input.setAttribute("list", "fcbp-names");
                 input.value = savedNames[text] || ""; 
                 
-                input.addEventListener("input", (e) => {
-                    updateName(text, cell, e.target.value);
+                input.addEventListener("change", (e) => {
+                    updateName(text, cell, input, e.target.value);
                 });
 
                 inputContainer.appendChild(input);
@@ -311,7 +305,6 @@
                 cell.appendChild(inputContainer);
                 board.appendChild(cell);
 
-                // 恢復先前的顯示狀態
                 if (input.value.trim() !== "") {
                     cell.classList.add("has-name");
                 }
@@ -321,25 +314,42 @@
             });
         }
 
-        // 更新輸入的名字
-        function updateName(text, cell, value) {
-            savedNames[text] = value; 
-            localStorage.setItem("lift_bingo_names", JSON.stringify(savedNames));
+        // 更新與驗證輸入的名字
+        function updateName(text, cell, inputElement, value) {
+            const trimmedValue = value.trim();
 
-            if (value.trim() !== "") {
-                cell.classList.add("has-name");
-            } else {
+            if (trimmedValue === "") {
+                savedNames[text] = "";
                 cell.classList.remove("has-name");
-                // 如果名字被刪除了，自動取消抽中狀態
                 cell.classList.remove("drawn");
                 drawnStatus[text] = false;
+                localStorage.setItem("lift_bingo_names", JSON.stringify(savedNames));
                 localStorage.setItem("lift_bingo_drawn", JSON.stringify(drawnStatus));
+                return;
             }
+
+            // 【唯一性驗證】：檢查這個名字是否已經在其他格子填寫過
+            let isDuplicate = false;
+            for (let key in savedNames) {
+                if (key !== text && savedNames[key] && savedNames[key].trim().toLowerCase() === trimmedValue.toLowerCase()) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+
+            if (isDuplicate) {
+                alert(`⚠️ 「${trimmedValue}」已經在其他格子填寫過囉！每位同工的名字只能填寫一次，請尋找其他同工簽名。`);
+                inputElement.value = ""; // 清空輸入框
+                return;
+            }
+
+            // 通過驗證，儲存數據
+            savedNames[text] = trimmedValue; 
+            localStorage.setItem("lift_bingo_names", JSON.stringify(savedNames));
+            cell.classList.add("has-name");
         }
 
-        // 切換點擊抽中狀態
         function toggleDrawn(text, cell) {
-            // 只有在已經填寫了名字的情況下，才可以點擊標記為抽中
             if (!savedNames[text] || savedNames[text].trim() === "") return;
 
             if (cell.classList.contains("drawn")) {
