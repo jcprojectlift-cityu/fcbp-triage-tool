@@ -68,14 +68,14 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-        .bingo-status {
+        .game-instruction {
             font-weight: bold;
-            color: var(--secondary-color);
-            font-size: 1rem;
+            color: #555;
+            font-size: 0.9rem;
         }
 
         button.reset-btn {
-            background-color: var(--primary-color);
+            background-color: #d9534f;
             color: white;
             border: none;
             padding: 6px 12px;
@@ -87,7 +87,7 @@
         }
 
         button.reset-btn:hover {
-            background-color: #005f85;
+            background-color: #c9302c;
         }
 
         .bingo-grid {
@@ -109,24 +109,32 @@
             justify-content: space-between;
             min-height: 140px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             position: relative;
+            cursor: pointer; /* 讓整格看起來可以點擊 */
         }
 
-        .bingo-cell.active {
+        /* 輸入名字後的狀態 (綠色邊框) */
+        .bingo-cell.has-name {
             border-color: var(--success-color);
             background-color: #eafbf9;
         }
 
-        .bingo-cell.bingo-highlight {
-            border-color: var(--secondary-color);
-            background-color: #fff9e6;
-            animation: pulse 1.5s infinite alternate;
+        /* 抽中後點擊翻牌的狀態 (橘色高亮) */
+        .bingo-cell.drawn {
+            border-color: var(--secondary-color) !important;
+            background-color: #fff4e6 !important;
+            transform: scale(0.98);
+            box-shadow: inset 0 0 8px rgba(241, 140, 34, 0.2);
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 3px rgba(241, 140, 34, 0.4); }
-            100% { box-shadow: 0 0 10px rgba(241, 140, 34, 0.7); }
+        /* 在被抽中的格子右上角加上小剔號 */
+        .bingo-cell.drawn::after {
+            content: "🎯";
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            font-size: 0.8rem;
         }
 
         .cell-content {
@@ -142,6 +150,7 @@
             justify-content: center;
             margin-bottom: 6px;
             padding: 0 2px;
+            pointer-events: none; /* 防止干擾格子點擊事件 */
         }
 
         .input-container {
@@ -167,63 +176,6 @@
             border-style: solid;
         }
 
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            color: white;
-            text-align: center;
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-
-        .overlay-content {
-            background: white;
-            color: #333;
-            padding: 30px 40px;
-            border-radius: 20px;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
-        .overlay-content h2 {
-            color: var(--secondary-color);
-            font-size: 2.3rem;
-            margin-bottom: 10px;
-            font-weight: 900;
-        }
-
-        .overlay-content p {
-            font-size: 1rem;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .overlay-content button {
-            background-color: var(--success-color);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
         @media (max-width: 360px) {
             .cell-content {
                 font-size: 0.68rem;
@@ -246,27 +198,19 @@
     </header>
 
     <div class="controls">
-        <div class="bingo-status" id="bingo-counter">連線數：0 條連線 🏆</div>
+        <div class="game-instruction">💡 玩法：填好名字後，當主持抽中該同工時點擊格子翻牌！</div>
         <button class="reset-btn" onclick="confirmReset()">重設表格</button>
     </div>
 
-    <!-- HTML5 Datalist 資料庫：儲存所有出席 FCBP 名字 -->
+    <!-- HTML5 Datalist 名單資料庫 -->
     <datalist id="fcbp-names">
-        <!-- 名字資料庫將透過 JavaScript 自動動態載入 -->
+        <!-- 透過 JS 自動載入 -->
     </datalist>
 
     <div class="bingo-grid" id="bingo-board"></div>
 
-    <div class="overlay" id="bingo-overlay">
-        <div class="overlay-content">
-            <h2>🎉 BINGO! 🎉</h2>
-            <p>恭喜你成功連線！<br>即刻舉手向現場同工分享你收集到嘅實踐智慧啦！</p>
-            <button onclick="closeOverlay()">繼續遊戲</button>
-        </div>
-    </div>
-
     <script>
-        // 出席同工名單資料庫
+        // 出席同工名單資料庫[span_0](start_span)[span_0](end_span)
         const fcbpDatabase = [
             "Winnie", "Benjamin", "Vanessa", "Derrick", "忠", "Oscar", "Heyman", 
             "Ting", "Jason", "Yu", "Marcos", "Ken", "Hilda", "Ka Chun", "Chloe", 
@@ -283,7 +227,7 @@
             "曾用街坊感興趣的話題成功打開話題",
             "曾協助街坊疏解他們對「上樓」或「綜援」的福利顧慮",
             "用簡單的圖卡或自製工具與街坊溝通",
-            "用 WhatsApp 等方法簡單接觸、提醒及關心街坊",
+            "用 WhatsApp 等方法簡單接触、提醒及關心街坊",
             "成功介紹自己令街坊明白 FCBP 是什麼角色",
             "街坊由態度冷淡變為會主動找 FCBP 傾談",
             "記得所有自己負責之家庭個案的稱呼",
@@ -294,17 +238,10 @@
             "其他成功經驗："
         ];
 
-        const winningCombinations = [
-            [0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15], // 橫
-            [0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15], // 直
-            [0, 5, 10, 15], [3, 6, 9, 12] // 斜
-        ];
-
         let shuffledItems = [];
-        let savedData = {}; 
-        let hasAlertedBingo = false;
+        let savedNames = {};   // { "題目文本": "填入的名字" }
+        let drawnStatus = {};  // { "題目文本": true/false (是否被抽中點選) }
 
-        // 初始化名單下拉選單
         function initDatabase() {
             const datalist = document.getElementById("fcbp-names");
             datalist.innerHTML = "";
@@ -327,8 +264,12 @@
 
         function initData() {
             shuffledItems = shuffle([...baseItems]);
-            if (localStorage.getItem("lift_bingo_v2_data")) {
-                savedData = JSON.parse(localStorage.getItem("lift_bingo_v2_data"));
+            
+            if (localStorage.getItem("lift_bingo_names")) {
+                savedNames = JSON.parse(localStorage.getItem("lift_bingo_names"));
+            }
+            if (localStorage.getItem("lift_bingo_drawn")) {
+                drawnStatus = JSON.parse(localStorage.getItem("lift_bingo_drawn"));
             }
         }
 
@@ -341,6 +282,13 @@
                 cell.className = "bingo-cell";
                 cell.id = `cell-${index}`;
 
+                // 點擊格子切換「被抽中/未抽中」狀態
+                cell.addEventListener("click", (e) => {
+                    // 如果點擊的是輸入框本身，則不觸發翻牌切換
+                    if (e.target.tagName === "INPUT") return;
+                    toggleDrawn(text, cell);
+                });
+
                 const content = document.createElement("div");
                 content.className = "cell-content";
                 content.innerText = text;
@@ -351,11 +299,11 @@
                 const input = document.createElement("input");
                 input.type = "text";
                 input.placeholder = "輸入姓名...";
-                input.setAttribute("list", "fcbp-names"); // 綁定下拉選單資料庫
-                input.value = savedData[text] || ""; 
+                input.setAttribute("list", "fcbp-names");
+                input.value = savedNames[text] || ""; 
                 
                 input.addEventListener("input", (e) => {
-                    updateName(text, index, e.target.value);
+                    updateName(text, cell, e.target.value);
                 });
 
                 inputContainer.appendChild(input);
@@ -363,81 +311,58 @@
                 cell.appendChild(inputContainer);
                 board.appendChild(cell);
 
+                // 恢復先前的顯示狀態
                 if (input.value.trim() !== "") {
-                    cell.classList.add("active");
+                    cell.classList.add("has-name");
+                }
+                if (drawnStatus[text]) {
+                    cell.classList.add("drawn");
                 }
             });
-            checkBingo(false);
         }
 
-        function updateName(text, index, value) {
-            savedData[text] = value; 
-            localStorage.setItem("lift_bingo_v2_data", JSON.stringify(savedData));
+        // 更新輸入的名字
+        function updateName(text, cell, value) {
+            savedNames[text] = value; 
+            localStorage.setItem("lift_bingo_names", JSON.stringify(savedNames));
 
-            const cell = document.getElementById(`cell-${index}`);
             if (value.trim() !== "") {
-                cell.classList.add("active");
+                cell.classList.add("has-name");
             } else {
-                cell.classList.remove("active");
-            }
-
-            checkBingo(true);
-        }
-
-        function checkBingo(shouldTriggerAlert) {
-            let bingoCount = 0;
-            const highlightedCells = new Set();
-
-            winningCombinations.forEach(combo => {
-                const isComboComplete = combo.every(index => {
-                    const textKey = shuffledItems[index];
-                    return savedData[textKey] && savedData[textKey].trim() !== "";
-                });
-
-                if (isComboComplete) {
-                    bingoCount++;
-                    combo.forEach(index => highlightedCells.add(index));
-                }
-            });
-
-            for (let i = 0; i < 16; i++) {
-                const cell = document.getElementById(`cell-${i}`);
-                if (cell) {
-                    if (highlightedCells.has(i)) {
-                        cell.classList.add("bingo-highlight");
-                    } else {
-                        cell.classList.remove("bingo-highlight");
-                    }
-                }
-            }
-
-            document.getElementById("bingo-counter").innerText = `連線數：${bingoCount} 條連線 🏆`;
-
-            if (bingoCount > 0 && !hasAlertedBingo && shouldTriggerAlert) {
-                document.getElementById("bingo-overlay").style.display = "flex";
-                hasAlertedBingo = true;
-            }
-
-            if (bingoCount === 0) {
-                hasAlertedBingo = false;
+                cell.classList.remove("has-name");
+                // 如果名字被刪除了，自動取消抽中狀態
+                cell.classList.remove("drawn");
+                drawnStatus[text] = false;
+                localStorage.setItem("lift_bingo_drawn", JSON.stringify(drawnStatus));
             }
         }
 
-        function closeOverlay() {
-            document.getElementById("bingo-overlay").style.display = "none";
+        // 切換點擊抽中狀態
+        function toggleDrawn(text, cell) {
+            // 只有在已經填寫了名字的情況下，才可以點擊標記為抽中
+            if (!savedNames[text] || savedNames[text].trim() === "") return;
+
+            if (cell.classList.contains("drawn")) {
+                cell.classList.remove("drawn");
+                drawnStatus[text] = false;
+            } else {
+                cell.classList.add("drawn");
+                drawnStatus[text] = true;
+            }
+            localStorage.setItem("lift_bingo_drawn", JSON.stringify(drawnStatus));
         }
 
         function confirmReset() {
-            if (confirm("確定要清除所有填寫嘅名字並全面重設 BINGO 表格嗎？")) {
-                savedData = {};
-                localStorage.removeItem("lift_bingo_v2_data");
-                hasAlertedBingo = false;
+            if (confirm("確定要全面重設表格（清除所有名字及中獎標記）嗎？")) {
+                savedNames = {};
+                drawnStatus = {};
+                localStorage.removeItem("lift_bingo_names");
+                localStorage.removeItem("lift_bingo_drawn");
                 initData();
                 renderBoard();
             }
         }
 
-        // 啟動執行
         initDatabase();
         initData();
         renderBoard();
