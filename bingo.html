@@ -71,7 +71,10 @@
         .game-instruction {
             font-weight: bold;
             color: #555;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            line-height: 1.3;
+            flex: 1;
+            margin-right: 10px;
         }
 
         button.reset-btn {
@@ -84,6 +87,7 @@
             font-weight: bold;
             font-size: 0.85rem;
             transition: background-color 0.2s;
+            flex-shrink: 0;
         }
 
         button.reset-btn:hover {
@@ -107,18 +111,20 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 140px;
+            min-height: 150px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.04);
             transition: all 0.2s ease;
             position: relative;
             cursor: pointer;
         }
 
+        /* 輸入並確認名字後的狀態 (綠色邊框) */
         .bingo-cell.has-name {
             border-color: var(--success-color);
             background-color: #eafbf9;
         }
 
+        /* 抽中後點擊翻牌的狀態 (橘色高亮) */
         .bingo-cell.drawn {
             border-color: var(--secondary-color) !important;
             background-color: #fff4e6 !important;
@@ -152,6 +158,9 @@
 
         .input-container {
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .input-container input {
@@ -173,6 +182,33 @@
             border-style: solid;
         }
 
+        /* 鎖定後的輸入框樣式 */
+        .input-container input:disabled {
+            background-color: #e6f7f4;
+            border: 1px solid var(--success-color);
+            color: #0d6e5c;
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+
+        /* 確認按鈕樣式 */
+        .confirm-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 4px 0;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .confirm-btn:hover {
+            background-color: #005f85;
+        }
+
         @media (max-width: 360px) {
             .cell-content {
                 font-size: 0.68rem;
@@ -182,7 +218,10 @@
                 padding: 4px 2px;
             }
             .bingo-cell {
-                min-height: 120px;
+                min-height: 130px;
+            }
+            .confirm-btn {
+                font-size: 0.65rem;
             }
         }
     </style>
@@ -195,10 +234,11 @@
     </header>
 
     <div class="controls">
-        <div class="game-instruction">💡 玩法：每格名字不能重複。抽中同工時，輕點格子即可翻牌！</div>
+        <div class="game-instruction">💡 玩法：填名後按「確認」鎖定（不可更改）。被抽中時輕點格子翻牌！</div>
         <button class="reset-btn" onclick="confirmReset()">重設表格</button>
     </div>
 
+    <!-- HTML5 Datalist 名單資料庫 -->
     <datalist id="fcbp-names">
         <!-- 透過 JS 自動載入 -->
     </datalist>
@@ -206,7 +246,7 @@
     <div class="bingo-grid" id="bingo-board"></div>
 
     <script>
-        // 出席同工名單資料庫[span_0](start_span)[span_0](end_span)
+        // 出席同工名單資料庫[span_2](start_span)[span_2](end_span)
         const fcbpDatabase = [
             "Winnie", "Benjamin", "Vanessa", "Derrick", "忠", "Oscar", "Heyman", 
             "Ting", "Jason", "Yu", "Marcos", "Ken", "Hilda", "Ka Chun", "Chloe", 
@@ -228,15 +268,16 @@
             "街坊由態度冷淡變為會主動找 FCBP 傾談",
             "記得所有自己負責之家庭個案的稱呼",
             "用不帶批判的角度理解一些行為/思維與 FCBP 自己價值觀不同的街坊",
-            "成功與一家人(2 人或以上)一齊傾計劃",
+            "成功與一家人(2 人 or 以上)一齊傾計劃",
             "個案 Intake 率已達 90%",
             "對應不同類型街坊的有不同的溝通模式",
             "其他成功經驗："
         ];
 
         let shuffledItems = [];
-        let savedNames = {};   // { "題目文本": "填入的名字" }
-        let drawnStatus = {};  // { "題目文本": true/false }
+        let savedNames = {};      // { "題目文本": "填入的名字" }
+        let lockedStatus = {};    // { "題目文本": true/false (是否已確認鎖定) }
+        let drawnStatus = {};     // { "題目文本": true/false (是否被抽中翻牌) }
 
         function initDatabase() {
             const datalist = document.getElementById("fcbp-names");
@@ -264,6 +305,9 @@
             if (localStorage.getItem("lift_bingo_names")) {
                 savedNames = JSON.parse(localStorage.getItem("lift_bingo_names"));
             }
+            if (localStorage.getItem("lift_bingo_locked")) {
+                lockedStatus = JSON.parse(localStorage.getItem("lift_bingo_locked"));
+            }
             if (localStorage.getItem("lift_bingo_drawn")) {
                 drawnStatus = JSON.parse(localStorage.getItem("lift_bingo_drawn"));
             }
@@ -278,8 +322,9 @@
                 cell.className = "bingo-cell";
                 cell.id = `cell-${index}`;
 
+                // 點擊格子翻牌事件 (必須是已鎖定狀態，且點擊的不是輸入框或按鈕)
                 cell.addEventListener("click", (e) => {
-                    if (e.target.tagName === "INPUT") return;
+                    if (e.target.tagName === "INPUT" || e.target.tagName === "BUTTON") return;
                     toggleDrawn(text, cell);
                 });
 
@@ -296,39 +341,57 @@
                 input.setAttribute("list", "fcbp-names");
                 input.value = savedNames[text] || ""; 
                 
-                input.addEventListener("change", (e) => {
-                    updateName(text, cell, input, e.target.value);
+                // 確認按鈕
+                const confirmBtn = document.createElement("button");
+                confirmBtn.className = "confirm-btn";
+                confirmBtn.innerText = "確認鎖定";
+                
+                // 控制按鈕顯示與隱藏
+                if (input.value.trim() !== "" && !lockedStatus[text]) {
+                    confirmBtn.style.display = "block";
+                } else {
+                    confirmBtn.style.display = "none";
+                }
+
+                // 當打字或選名字時，動態顯示「確認按鈕」
+                input.addEventListener("input", (e) => {
+                    if (e.target.value.trim() !== "") {
+                        confirmBtn.style.display = "block";
+                    } else {
+                        confirmBtn.style.display = "none";
+                    }
+                });
+
+                // 按下確認鎖定
+                confirmBtn.addEventListener("click", () => {
+                    handleConfirm(text, cell, input, confirmBtn);
                 });
 
                 inputContainer.appendChild(input);
+                inputContainer.appendChild(confirmBtn);
                 cell.appendChild(content);
                 cell.appendChild(inputContainer);
                 board.appendChild(cell);
 
-                if (input.value.trim() !== "") {
-                    cell.classList.add("has-name");
+                // 根據本地儲存恢復狀態
+                if (lockedStatus[text]) {
+                    input.disabled = true;           // 鎖定輸入框
+                    cell.classList.add("has-name");  // 變綠色背景
+                    confirmBtn.style.display = "none"; // 隱藏按鈕
                 }
                 if (drawnStatus[text]) {
-                    cell.classList.add("drawn");
+                    cell.classList.add("drawn");     // 恢復翻牌狀態
                 }
             });
         }
 
-        // 更新與驗證輸入的名字
-        function updateName(text, cell, inputElement, value) {
-            const trimmedValue = value.trim();
+        // 執行鎖定確認與重複驗證
+        function handleConfirm(text, cell, inputElement, confirmBtnElement) {
+            const trimmedValue = inputElement.value.trim();
 
-            if (trimmedValue === "") {
-                savedNames[text] = "";
-                cell.classList.remove("has-name");
-                cell.classList.remove("drawn");
-                drawnStatus[text] = false;
-                localStorage.setItem("lift_bingo_names", JSON.stringify(savedNames));
-                localStorage.setItem("lift_bingo_drawn", JSON.stringify(drawnStatus));
-                return;
-            }
+            if (trimmedValue === "") return;
 
-            // 【唯一性驗證】：檢查這個名字是否已經在其他格子填寫過
+            // 【唯一性驗證】[span_3](start_span)[span_3](end_span)
             let isDuplicate = false;
             for (let key in savedNames) {
                 if (key !== text && savedNames[key] && savedNames[key].trim().toLowerCase() === trimmedValue.toLowerCase()) {
@@ -338,19 +401,30 @@
             }
 
             if (isDuplicate) {
-                alert(`⚠️ 「${trimmedValue}」已經在其他格子填寫過囉！每位同工的名字只能填寫一次，請尋找其他同工簽名。`);
-                inputElement.value = ""; // 清空輸入框
+                alert(`⚠️ 「${trimmedValue}」已經在其他格子確認過囉！每位同工的名字只能填寫一次，請尋找其他同工簽名。`);[span_4](start_span)[span_4](end_span)
+                inputElement.value = "";
+                confirmBtnElement.style.display = "none";
                 return;
             }
 
-            // 通過驗證，儲存數據
-            savedNames[text] = trimmedValue; 
-            localStorage.setItem("lift_bingo_names", JSON.stringify(savedNames));
-            cell.classList.add("has-name");
+            // 確認鎖定
+            if (confirm(`鎖定「${trimmedValue}」後將無法修改，確定嗎？`)) {
+                savedNames[text] = trimmedValue;
+                lockedStatus[text] = true;
+                
+                localStorage.setItem("lift_bingo_names", JSON.stringify(savedNames));
+                localStorage.setItem("lift_bingo_locked", JSON.stringify(lockedStatus));
+
+                // 鎖定 UI
+                inputElement.disabled = true;
+                cell.classList.add("has-name");
+                confirmBtnElement.style.display = "none";
+            }
         }
 
+        // 切換點擊抽中翻牌狀態（只有「已鎖定名字」的格子才能被點擊翻牌）
         function toggleDrawn(text, cell) {
-            if (!savedNames[text] || savedNames[text].trim() === "") return;
+            if (!lockedStatus[text]) return; // 未確認鎖定名字前，點擊無效
 
             if (cell.classList.contains("drawn")) {
                 cell.classList.remove("drawn");
@@ -363,10 +437,12 @@
         }
 
         function confirmReset() {
-            if (confirm("確定要全面重設表格（清除所有名字及中獎標記）嗎？")) {
+            if (confirm("⚠️ 確定要全面重設表格嗎？（將清除所有已鎖定的名字、翻牌紀錄並重新打亂表格）")) {
                 savedNames = {};
+                lockedStatus = {};
                 drawnStatus = {};
                 localStorage.removeItem("lift_bingo_names");
+                localStorage.removeItem("lift_bingo_locked");
                 localStorage.removeItem("lift_bingo_drawn");
                 initData();
                 renderBoard();
