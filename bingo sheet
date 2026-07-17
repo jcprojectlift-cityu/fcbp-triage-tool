@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JC PROJECT LIFT - BINGO破冰遊戲</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0076a3;
+            --secondary-color: #f18c22;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #dddddd;
+            --success-color: #2ec4b6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        p.subtitle {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 650px;
+            margin-bottom: 15px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .bingo-status {
+            font-weight: bold;
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+        }
+
+        button.reset-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        button.reset-btn:hover {
+            background-color: #005f85;
+        }
+
+        .bingo-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 650px;
+            margin-bottom: 25px;
+        }
+
+        .bingo-cell {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 150px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bingo-cell.active {
+            border-color: var(--success-color);
+            background-color: #eafbf9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(46, 196, 182, 0.15);
+        }
+
+        .bingo-cell.bingo-highlight {
+            border-color: var(--secondary-color);
+            background-color: #fff9e6;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 5px rgba(241, 140, 34, 0.4); }
+            100% { box-shadow: 0 0 15px rgba(241, 140, 34, 0.8); }
+        }
+
+        .cell-content {
+            font-size: 0.85rem;
+            font-weight: 700;
+            line-height: 1.4;
+            text-align: center;
+            color: #2c3e50;
+            word-break: break-all;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .input-container {
+            width: 100%;
+            position: relative;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px dashed #bbb;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            background-color: #fafafa;
+            transition: all 0.2s;
+        }
+
+        .input-container input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: #ffffff;
+            border-style: solid;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .overlay-content {
+            background: white;
+            color: #333;
+            padding: 30px 40px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .overlay-content h2 {
+            color: var(--secondary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+
+        .overlay-content p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .overlay-content button {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 500px) {
+            .bingo-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .bingo-cell {
+                min-height: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>JC PROJECT LIFT</h1>
+        <p class="subtitle">Cohort 2 Case Conference - Intake & Engagement 實踐智慧 BINGO</p>
+    </header>
+
+    <div class="controls">
+        <div class="bingo-status" id="bingo-counter">連線數：0 條連線 🏆</div>
+        <button class="reset-btn" onclick="confirmReset()">重設表格</button>
+    </div>
+
+    <div class="bingo-grid" id="bingo-board"></div>
+
+    <div class="overlay" id="bingo-overlay">
+        <div class="overlay-content">
+            <h2>🎉 BINGO! 🎉</h2>
+            <p>恭喜你成功連線！<br>即刻舉手向現場同工分享你收集到嘅實踐智慧啦！</p>
+            <button onclick="closeOverlay()">繼續遊戲</button>
+        </div>
+    </div>
+
+    <script>
+        // 原始16格數據
+        const baseItems = [
+            "最近三個月先入職",
+            "鍥而不捨地搵街坊",
+            "有用 7FC 角度去了解街坊",
+            "成功令街坊由不投入/不想改變到願意嘗試思考改變方向",
+            "曾用街坊感興趣的話題成功打開話題",
+            "曾協助街坊疏解他們對「上樓」或「綜援」的福利顧慮",
+            "用簡單的圖卡或自製工具與街坊溝通",
+            "用 WhatsApp 等方法簡單接觸、提醒及關心街坊",
+            "成功介紹自己令街坊明白 FCBP 是什麼角色",
+            "街坊由態度冷淡變為會主動找 FCBP 傾談",
+            "記得所有自己負責之家庭個案的稱呼",
+            "用不帶批判的角度理解一些行為/思維與 FCBP 自己價值觀不同的街坊",
+            "成功與一家人(2 人或以上)一齊傾計劃",
+            "個案 Intake 率已達 90%",
+            "對應不同類型街坊的有不同的溝通模式",
+            "其他成功經驗："
+        ];
+
+        // 4x4 連線組合
+        const winningCombinations = [
+            [0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15], // 橫
+            [0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15], // 直
+            [0, 5, 10, 15], [3, 6, 9, 12] // 斜
+        ];
+
+        let shuffledItems = [];
+        let savedData = {}; // 格式為 { "題目文本": "填入的名字" }
+        let hasAlertedBingo = false;
+
+        // 隨機打亂陣列函數 (Fisher-Yates Shuffle)
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // 初始化資料管理
+        function initData() {
+            // 複製並打亂題目
+            shuffledItems = shuffle([...baseItems]);
+
+            // 讀取本地快取
+            if (localStorage.getItem("lift_bingo_v2_data")) {
+                savedData = JSON.parse(localStorage.getItem("lift_bingo_v2_data"));
+            }
+        }
+
+        // 渲染表格
+        const board = document.getElementById("bingo-board");
+        
+        function renderBoard() {
+            board.innerHTML = "";
+            shuffledItems.forEach((text, index) => {
+                const cell = document.createElement("div");
+                cell.className = "bingo-cell";
+                cell.id = `cell-${index}`;
+
+                const content = document.createElement("div");
+                content.className = "cell-content";
+                content.innerText = text;
+
+                const inputContainer = document.createElement("div");
+                inputContainer.className = "input-container";
+
+                const input = document.createElement("input");
+                input.type = "text";
+                input.placeholder = "輸入同工姓名...";
+                input.value = savedData[text] || ""; // 以「文本」為 Key 讀取資料
+                
+                input.addEventListener("input", (e) => {
+                    updateName(text, index, e.target.value);
+                });
+
+                inputContainer.appendChild(input);
+                cell.appendChild(content);
+                cell.appendChild(inputContainer);
+                board.appendChild(cell);
+
+                if (input.value.trim() !== "") {
+                    cell.classList.add("active");
+                }
+            });
+            checkBingo(false);
+        }
+
+        // 更新輸入的名字
+        function updateName(text, index, value) {
+            savedData[text] = value; // 以「文本」作 Key 儲存，刷新隨機換位置後名字也不會錯亂
+            localStorage.setItem("lift_bingo_v2_data", JSON.stringify(savedData));
+
+            const cell = document.getElementById(`cell-${index}`);
+            if (value.trim() !== "") {
+                cell.classList.add("active");
+            } else {
+                cell.classList.remove("active");
+            }
+
+            checkBingo(true);
+        }
+
+        // 檢查連線
+        function checkBingo(shouldTriggerAlert) {
+            let bingoCount = 0;
+            const highlightedCells = new Set();
+
+            winningCombinations.forEach(combo => {
+                const isComboComplete = combo.every(index => {
+                    const textKey = shuffledItems[index];
+                    return savedData[textKey] && savedData[textKey].trim() !== "";
+                });
+
+                if (isComboComplete) {
+                    bingoCount++;
+                    combo.forEach(index => highlightedCells.add(index));
+                }
+            });
+
+            // 更新格子高亮狀態
+            for (let i = 0; i < 16; i++) {
+                const cell = document.getElementById(`cell-${i}`);
+                if (cell) {
+                    if (highlightedCells.has(i)) {
+                        cell.classList.add("bingo-highlight");
+                    } else {
+                        cell.classList.remove("bingo-highlight");
+                    }
+                }
+            }
+
+            document.getElementById("bingo-counter").innerText = `連線數：${bingoCount} 條連線 🏆`;
+
+            if (bingoCount > 0 && !hasAlertedBingo && shouldTriggerAlert) {
+                document.getElementById("bingo-overlay").style.display = "flex";
+                hasAlertedBingo = true;
+            }
+
+            if (bingoCount === 0) {
+                hasAlertedBingo = false;
+            }
+        }
+
+        function closeOverlay() {
+            document.getElementById("bingo-overlay").style.display = "none";
+        }
+
+        function confirmReset() {
+            if (confirm("確定要清除所有填寫嘅名字並全面重設 BINGO 表格嗎？")) {
+                savedData = {};
+                localStorage.removeItem("lift_bingo_v2_data");
+                hasAlertedBingo = false;
+                initData();
+                renderBoard();
+            }
+        }
+
+        // 執行遊戲
+        initData();
+        renderBoard();
+    </script>
+</body>
+</html>
