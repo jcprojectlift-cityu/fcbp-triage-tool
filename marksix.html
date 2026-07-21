@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FCBP 六合彩 BINGO Caller</title>
+    <style>
+        :root {
+            --hk-green: #0a5c36;
+            --hk-gold: #ffd700;
+            --red-ball: #e74c3c;
+            --blue-ball: #2980b9;
+            --green-ball: #27ae60;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, "PingFang HK", "Microsoft JhengHei", sans-serif;
+            background: radial-gradient(circle, #1a2a3a 0%, #0d151d 100%);
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: var(--hk-gold);
+            margin: 0 0 5px 0;
+            font-size: 2.2rem;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: #bdc3c7;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        /* --- MARK SIX MACHINE DOME --- */
+        .machine-stage {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        /* Top Chute Tube */
+        .chute {
+            position: absolute;
+            top: 10px;
+            width: 50px;
+            height: 70px;
+            border-left: 4px solid rgba(255, 255, 255, 0.5);
+            border-right: 4px solid rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 2;
+        }
+
+        /* Transparent Dome Chamber */
+        .glass-dome {
+            position: relative;
+            width: 280px;
+            height: 250px;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25), rgba(255,255,255,0.05) 70%);
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            border-radius: 140px 140px 40px 40px;
+            box-shadow: inset 0 0 30px rgba(255,255,255,0.2), 0 10px 25px rgba(0,0,0,0.5);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        /* Wind-Wheel / Fan at Base */
+        .wind-wheel {
+            position: absolute;
+            bottom: 5px;
+            width: 120px;
+            height: 20px;
+            background: repeating-conic-gradient(from 0deg, var(--hk-gold) 0deg 30deg, #333 30deg 60deg);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+            transition: transform 0.1s linear;
+        }
+
+        .spinning-wheel {
+            animation: spinWheel 0.2s infinite linear;
+        }
+
+        @keyframes spinWheel {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Machine Stand Base */
+        .machine-base {
+            width: 320px;
+            height: 35px;
+            background: linear-gradient(180deg, #444 0%, #111 100%);
+            border-radius: 0 0 15px 15px;
+            border-top: 3px solid var(--hk-gold);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.6);
+        }
+
+        /* --- THE BALLS INSIDE THE CHAMBER --- */
+        .ball-pool {
+            position: absolute;
+            width: 240px;
+            height: 180px;
+            bottom: 25px;
+        }
+
+        .bingo-ball {
+            position: absolute;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            box-shadow: inset -4px -4px 8px rgba(0,0,0,0.5), 0 3px 6px rgba(0,0,0,0.4);
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        /* Authentic HK Mark Six Ball Colors */
+        .ball-red { background: radial-gradient(circle at 35% 35%, #ff7675, var(--red-ball)); }
+        .ball-blue { background: radial-gradient(circle at 35% 35%, #74b9ff, var(--blue-ball)); }
+        .ball-green { background: radial-gradient(circle at 35% 35%, #55efc4, var(--green-ball)); }
+
+        /* Agitated Bouncing Animation when Engine is ON */
+        .tumbling {
+            animation: tumble 0.3s infinite alternate ease-in-out;
+        }
+
+        @keyframes tumble {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(var(--dx), var(--dy)) rotate(360deg); }
+        }
+
+        /* Drawn Ball Animation Out of Chute */
+        .drawn-anim {
+            position: absolute !important;
+            top: 20px !important;
+            left: calc(50% - 25px) !important;
+            width: 50px !important;
+            height: 50px !important;
+            font-size: 0.9rem !important;
+            z-index: 10;
+            animation: popOutChute 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popOutChute {
+            0% { transform: translateY(120px) scale(0.5); }
+            50% { transform: translateY(-30px) scale(1.2); }
+            100% { transform: translateY(-70px) scale(1.5); }
+        }
+
+        /* --- BIG RESULT REVEAL DISPLAY --- */
+        .result-display {
+            min-height: 80px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            color: #2c3e50;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            border: 4px solid var(--hk-gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
+            to { box-shadow: 0 0 25px rgba(255, 215, 0, 0.9); }
+        }
+
+        /* --- CONTROLS --- */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-start {
+            background-color: #27ae60;
+            color: white;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-start:hover { background-color: #219150; }
+
+        .btn-draw {
+            background-color: var(--hk-gold);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-draw:hover { background-color: #f1c40f; }
+
+        .btn-reset {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-reset:hover { background-color: #c0392b; }
+
+        button:disabled {
+            background-color: #555 !important;
+            color: #888 !important;
+            cursor: not-allowed !important;
+            box-shadow: none !important;
+        }
+
+        .stats {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #e0e0e0;
+        }
+
+        /* --- RESULTS HISTORY RACK --- */
+        .history-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 15px;
+            text-align: left;
+        }
+
+        .history-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: var(--hk-gold);
+        }
+
+        .history-rack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .rack-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px 5px 6px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .rack-ball {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.65rem;
+            font-weight: bold;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>六合彩 FCBP BINGO 攪珠機</h1>
+        <div class="subtitle">Hong Kong Mark Six Style Name Lottery</div>
+    </header>
+
+    <div class="container">
+
+        <!-- MARK SIX MACHINE DOME AREA -->
+        <div class="machine-stage">
+            <div class="chute"></div>
+
+            <div class="glass-dome">
+                <div class="ball-pool" id="ballPool">
+                    <!-- Balls render here dynamically -->
+                </div>
+                <div class="wind-wheel" id="windWheel"></div>
+            </div>
+
+            <div class="machine-base"></div>
+        </div>
+
+        <!-- REVEAL BOARD -->
+        <div class="result-display">
+            <div id="resultCard" style="display: none;" class="result-card">
+                <div class="rack-ball" id="resultBall">1</div>
+                <span id="resultName">--</span>
+            </div>
+        </div>
+
+        <!-- COUNTER -->
+        <div class="stats">
+            Remaining Balls: <span id="remainingCount" style="color: var(--hk-gold); font-weight: bold;">0</span> / <span id="totalCount">0</span>
+        </div>
+
+        <!-- CONTROL BUTTONS -->
+        <div class="controls">
+            <button class="btn-start" id="startBtn" onclick="toggleEngine()">開始 (Start Machine)</button>
+            <button class="btn-draw" id="drawBtn" onclick="drawBall()" disabled>抽 (Draw Ball)</button>
+            <button class="btn-reset" onclick="resetGame()">重置 (Reset)</button>
+        </div>
+
+        <!-- HISTORY DRAW RESULTS -->
+        <div class="history-section">
+            <div class="history-title">Drawn Results (出珠結果):</div>
+            <div class="history-rack" id="historyRack"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // FCBP Name List
+        const fcbpList = [
+            "Winnie", "Vanessa", "Derrick", "忠", "Oscar", 
+            "Jason", "Yu", "Marcos", "Ken", "Hilda", 
+            "Ka Chun", "Chloe", "Heyman", "Virginia", "Leo", 
+            "Billy", "Alison", "Patrick", "Suki", "Ruby", 
+            "Bill", "Harrison", "Bobo", "Pui", "May L", 
+            "Yuet", "Adrian", "Fung", "Ying", "Coco", 
+            "Lemon", "Melody", "May C", "Crystal", "Jerry", 
+            "Eva"
+        ];
+
+        const ballColors = ['ball-red', 'ball-blue', 'ball-green'];
+        let activePool = [];
+        let drawnHistory = [];
+        let isEngineRunning = false;
+
+        // Initialize and generate colorful balls inside the dome
+        function initMachine() {
+            activePool = fcbpList.map((name, index) => ({
+                id: index + 1,
+                name: name,
+                colorClass: ballColors[index % 3] // Alternate Red, Blue, Green
+            }));
+
+            drawnHistory = [];
+            isEngineRunning = false;
+            
+            document.getElementById('totalCount').innerText = activePool.length;
+            document.getElementById('remainingCount').innerText = activePool.length;
+            document.getElementById('historyRack').innerHTML = '';
+            document.getElementById('resultCard').style.display = 'none';
+            document.getElementById('startBtn').innerText = '開始 (Start Machine)';
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('drawBtn').disabled = true;
+            document.getElementById('windWheel').classList.remove('spinning-wheel');
+
+            renderBallsInDome();
+        }
+
+        // Render balls randomly inside the chamber pool
+        function renderBallsInDome() {
+            const pool = document.getElementById('ballPool');
+            pool.innerHTML = '';
+
+            activePool.forEach((item, idx) => {
+                const ball = document.createElement('div');
+                ball.className = `bingo-ball ${item.colorClass}`;
+                ball.id = `ball-${item.id}`;
+                ball.innerText = item.name;
+
+                // Random rest coordinates in dome
+                const posX = Math.random() * 190;
+                const posY = Math.random() * 120;
+                ball.style.left = `${posX}px`;
+                ball.style.bottom = `${posY}px`;
+
+                pool.appendChild(ball);
+            });
+        }
+
+        // Toggle Wind-wheel Machine Engine ON/OFF
+        function toggleEngine() {
+            const startBtn = document.getElementById('startBtn');
+            const drawBtn = document.getElementById('drawBtn');
+            const wheel = document.getElementById('windWheel');
+            const balls = document.querySelectorAll('.bingo-ball');
+
+            if (!isEngineRunning) {
+                // START ENGINE
+                isEngineRunning = true;
+                startBtn.innerText = '關閉 (Stop Engine)';
+                drawBtn.disabled = activePool.length === 0;
+                wheel.classList.add('spinning-wheel');
+
+                // Apply dynamic bouncing effect to all balls
+                balls.forEach(ball => {
+                    const dx = (Math.random() - 0.5) * 160;
+                    const dy = (Math.random() - 0.5) * 120;
+                    ball.style.setProperty('--dx', `${dx}px`);
+                    ball.style.setProperty('--dy', `${dy}px`);
+                    ball.classList.add('tumbling');
+                });
+            } else {
+                // STOP ENGINE
+                isEngineRunning = false;
+                startBtn.innerText = '開始 (Start Machine)';
+                drawBtn.disabled = true;
+                wheel.classList.remove('spinning-wheel');
+
+                balls.forEach(ball => {
+                    ball.classList.remove('tumbling');
+                });
+            }
+        }
+
+        // Draw a Ball out of the Machine
+        function drawBall() {
+            if (!isEngineRunning || activePool.length === 0) return;
+
+            const drawBtn = document.getElementById('drawBtn');
+            drawBtn.disabled = true;
+
+            // Pick random winner
+            const selectedIndex = Math.floor(Math.random() * activePool.length);
+            const winner = activePool.splice(selectedIndex, 1)[0];
+
+            // Target ball element
+            const winnerElement = document.getElementById(`ball-${winner.id}`);
+
+            if (winnerElement) {
+                // Remove tumble and launch up chute animation
+                winnerElement.classList.remove('tumbling');
+                winnerElement.classList.add('drawn-anim');
+
+                setTimeout(() => {
+                    // Show Big Reveal Card
+                    const resultCard = document.getElementById('resultCard');
+                    const resultBall = document.getElementById('resultBall');
+                    const resultName = document.getElementById('resultName');
+
+                    resultBall.className = `rack-ball ${winner.colorClass}`;
+                    resultBall.innerText = winner.id;
+                    resultName.innerText = winner.name;
+                    resultCard.style.display = 'inline-flex';
+
+                    // Append to History Rack
+                    addToHistory(winner);
+
+                    // Remove ball from dome pool UI
+                    winnerElement.remove();
+
+                    // Update Count
+                    document.getElementById('remainingCount').innerText = activePool.length;
+
+                    if (activePool.length > 0) {
+                        drawBtn.disabled = false;
+                    } else {
+                        drawBtn.disabled = true;
+                        toggleEngine(); // Auto stop engine when finished
+                        alert("All FCBP balls have been drawn! 派彩完畢 🎉");
+                    }
+                }, 800);
+            }
+        }
+
+        // Append drawn ball to the bottom Rack
+        function addToHistory(item) {
+            const rack = document.getElementById('historyRack');
+            
+            const card = document.createElement('div');
+            card.className = 'rack-item';
+
+            const ball = document.createElement('div');
+            ball.className = `rack-ball ${item.colorClass}`;
+            ball.innerText = item.id;
+
+            const nameSpan = document.createElement('span');
+            nameSpan.innerText = item.name;
+
+            card.appendChild(ball);
+            card.appendChild(nameSpan);
+
+            rack.insertBefore(card, rack.firstChild);
+        }
+
+        // Reset
+        function resetGame() {
+            if (confirm("是否重置搞珠機？(Reset Machine?)")) {
+                initMachine();
+            }
+        }
+
+        window.onload = initMachine;
+    </script>
+</body>
+</html>
