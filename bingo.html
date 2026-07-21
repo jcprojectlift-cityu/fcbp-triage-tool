@@ -34,6 +34,28 @@
             min-height: 100vh;
         }
 
+        /* 頂部恭喜訊息提示欄 (完全不覆蓋遊戲格子) */
+        .bingo-alert-banner {
+            display: none;
+            width: 100%;
+            max-width: 650px;
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         header {
             text-align: center;
             margin-bottom: 15px;
@@ -118,13 +140,13 @@
             cursor: pointer;
         }
 
-        /* 輸入並確認名字後的狀態 (綠色邊框) */
+        /* 輸入並確認名字後的狀態 */
         .bingo-cell.has-name {
             border-color: var(--success-color);
             background-color: #eafbf9;
         }
 
-        /* 抽中後點擊翻牌的狀態 (橘色高亮) */
+        /* 抽中後點擊翻牌的狀態 */
         .bingo-cell.drawn {
             border-color: var(--secondary-color) !important;
             background-color: #fff4e6 !important;
@@ -163,35 +185,39 @@
             gap: 4px;
         }
 
-        .input-container input {
+        .input-container select {
             width: 100%;
-            padding: 6px 4px;
+            padding: 6px 2px;
             border: 1px dashed #bbb;
             border-radius: 4px;
             text-align: center;
+            text-align-last: center;
             font-size: 0.75rem;
             font-weight: bold;
             color: var(--primary-color);
             background-color: #fafafa;
+            cursor: pointer;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
-        .input-container input:focus {
-            outline: none;
+        .input-container select:focus {
             border-color: var(--primary-color);
             background-color: #ffffff;
             border-style: solid;
         }
 
-        /* 鎖定後的輸入框樣式 */
-        .input-container input:disabled {
+        .input-container select:disabled {
             background-color: #e6f7f4;
             border: 1px solid var(--success-color);
             color: #0d6e5c;
             cursor: not-allowed;
             opacity: 0.9;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
-        /* 確認按鈕樣式 */
         .confirm-btn {
             width: 100%;
             background-color: var(--primary-color);
@@ -213,7 +239,7 @@
             .cell-content {
                 font-size: 0.68rem;
             }
-            .input-container input {
+            .input-container select {
                 font-size: 0.68rem;
                 padding: 4px 2px;
             }
@@ -228,30 +254,30 @@
 </head>
 <body>
 
+    <!-- 頂部恭喜訊息提示欄 (連線時自動觸發顯示) -->
+    <div class="bingo-alert-banner" id="bingo-banner">
+        🎉 你已連成一線，恭喜你！
+    </div>
+
     <header>
         <h1>JC PROJECT LIFT</h1>
         <p class="subtitle">Cohort 2 Case Conference - Intake & Engagement 實踐智慧 BINGO</p>
     </header>
 
     <div class="controls">
-        <div class="game-instruction">💡 玩法：填名後按「確認」鎖定（不可更改）。被抽中時輕點格子翻牌！</div>
+        <div class="game-instruction">💡 玩法：揀名後按「確認」鎖定。被抽中同工時輕點格子即可翻牌！</div>
         <button class="reset-btn" onclick="confirmReset()">重設表格</button>
     </div>
-
-    <!-- HTML5 Datalist 名單資料庫 -->
-    <datalist id="fcbp-names">
-        <!-- 透過 JS 自動載入 -->
-    </datalist>
 
     <div class="bingo-grid" id="bingo-board"></div>
 
     <script>
-        // 出席同工名單資料庫[span_2](start_span)[span_2](end_span)
+        // 已移除：Benjamin, On, Theresa, Ting[span_1](start_span)[span_1](end_span)
         const fcbpDatabase = [
-            "Winnie", "Benjamin", "Vanessa", "Derrick", "忠", "Oscar", "Heyman", 
-            "Ting", "Jason", "Yu", "Marcos", "Ken", "Hilda", "Ka Chun", "Chloe", 
+            "Winnie", "Vanessa", "Derrick", "忠", "Oscar", "Heyman", 
+            "Jason", "Yu", "Marcos", "Ken", "Hilda", "Ka Chun", "Chloe", 
             "Virginia", "Leo", "Billy", "Alison", "Patrick", "Suki", "Ruby", "Bill", 
-            "Harrison", "Bobo", "On", "Theresa", "Pui", "May L", "Yuet", "Adrian", 
+            "Harrison", "Bobo", "Pui", "May L", "Yuet", "Adrian", 
             "Fung", "Ying", "Coco", "Lemon", "Melody", "May C", "Crystal", "Jerry", "Eva"
         ];
 
@@ -274,20 +300,17 @@
             "其他成功經驗："
         ];
 
+        // 所有連線組合 (4橫, 4直, 2斜)
+        const winningCombinations = [
+            [0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15], // 橫線
+            [0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15], // 直線
+            [0, 5, 10, 15], [3, 6, 9, 12] // 對角線
+        ];
+
         let shuffledItems = [];
         let savedNames = {};      // { "題目文本": "填入的名字" }
-        let lockedStatus = {};    // { "題目文本": true/false (是否已確認鎖定) }
-        let drawnStatus = {};     // { "題目文本": true/false (是否被抽中翻牌) }
-
-        function initDatabase() {
-            const datalist = document.getElementById("fcbp-names");
-            datalist.innerHTML = "";
-            fcbpDatabase.forEach(name => {
-                const option = document.createElement("option");
-                option.value = name;
-                datalist.appendChild(option);
-            });
-        }
+        let lockedStatus = {};    // { "題目文本": true/false }
+        let drawnStatus = {};     // { "題目文本": true/false }
 
         function shuffle(array) {
             let currentIndex = array.length, randomIndex;
@@ -322,9 +345,8 @@
                 cell.className = "bingo-cell";
                 cell.id = `cell-${index}`;
 
-                // 點擊格子翻牌事件 (必須是已鎖定狀態，且點擊的不是輸入框或按鈕)
                 cell.addEventListener("click", (e) => {
-                    if (e.target.tagName === "INPUT" || e.target.tagName === "BUTTON") return;
+                    if (e.target.tagName === "SELECT" || e.target.tagName === "BUTTON") return;
                     toggleDrawn(text, cell);
                 });
 
@@ -335,96 +357,98 @@
                 const inputContainer = document.createElement("div");
                 inputContainer.className = "input-container";
 
-                const input = document.createElement("input");
-                input.type = "text";
-                input.placeholder = "輸入姓名...";
-                input.setAttribute("list", "fcbp-names");
-                input.value = savedNames[text] || ""; 
+                const select = document.createElement("select");
                 
-                // 確認按鈕
+                const defaultOption = document.createElement("option");
+                defaultOption.value = "";
+                defaultOption.innerText = "選擇姓名...";
+                select.appendChild(defaultOption);
+
+                fcbpDatabase.forEach(name => {
+                    const option = document.createElement("option");
+                    option.value = name;
+                    option.innerText = name;
+                    select.appendChild(option);
+                });
+
+                select.value = savedNames[text] || ""; 
+                
                 const confirmBtn = document.createElement("button");
                 confirmBtn.className = "confirm-btn";
                 confirmBtn.innerText = "確認鎖定";
                 
-                // 控制按鈕顯示與隱藏
-                if (input.value.trim() !== "" && !lockedStatus[text]) {
+                if (select.value !== "" && !lockedStatus[text]) {
                     confirmBtn.style.display = "block";
                 } else {
                     confirmBtn.style.display = "none";
                 }
 
-                // 當打字或選名字時，動態顯示「確認按鈕」
-                input.addEventListener("input", (e) => {
-                    if (e.target.value.trim() !== "") {
+                select.addEventListener("change", (e) => {
+                    if (e.target.value !== "") {
                         confirmBtn.style.display = "block";
                     } else {
                         confirmBtn.style.display = "none";
                     }
                 });
 
-                // 按下確認鎖定
                 confirmBtn.addEventListener("click", () => {
-                    handleConfirm(text, cell, input, confirmBtn);
+                    handleConfirm(text, cell, select, confirmBtn);
                 });
 
-                inputContainer.appendChild(input);
+                inputContainer.appendChild(select);
                 inputContainer.appendChild(confirmBtn);
                 cell.appendChild(content);
                 cell.appendChild(inputContainer);
                 board.appendChild(cell);
 
-                // 根據本地儲存恢復狀態
                 if (lockedStatus[text]) {
-                    input.disabled = true;           // 鎖定輸入框
-                    cell.classList.add("has-name");  // 變綠色背景
-                    confirmBtn.style.display = "none"; // 隱藏按鈕
+                    select.disabled = true;
+                    cell.classList.add("has-name");
+                    confirmBtn.style.display = "none";
                 }
                 if (drawnStatus[text]) {
-                    cell.classList.add("drawn");     // 恢復翻牌狀態
+                    cell.classList.add("drawn");
                 }
             });
+
+            checkBingoLine();
         }
 
-        // 執行鎖定確認與重複驗證
-        function handleConfirm(text, cell, inputElement, confirmBtnElement) {
-            const trimmedValue = inputElement.value.trim();
+        function handleConfirm(text, cell, selectElement, confirmBtnElement) {
+            const selectedValue = selectElement.value;
 
-            if (trimmedValue === "") return;
+            if (selectedValue === "") return;
 
-            // 【唯一性驗證】[span_3](start_span)[span_3](end_span)
             let isDuplicate = false;
             for (let key in savedNames) {
-                if (key !== text && savedNames[key] && savedNames[key].trim().toLowerCase() === trimmedValue.toLowerCase()) {
+                if (key !== text && savedNames[key] && savedNames[key].toLowerCase() === selectedValue.toLowerCase()) {
                     isDuplicate = true;
                     break;
                 }
             }
 
             if (isDuplicate) {
-                alert(`⚠️ 「${trimmedValue}」已經在其他格子確認過囉！每位同工的名字只能填寫一次，請尋找其他同工簽名。`);[span_4](start_span)[span_4](end_span)
-                inputElement.value = "";
+                alert(`⚠️ 「${selectedValue}」已經在其他格子確認過囉！每位同工的名字只能選取一次。`);
+                selectElement.value = "";
                 confirmBtnElement.style.display = "none";
                 return;
             }
 
-            // 確認鎖定
-            if (confirm(`鎖定「${trimmedValue}」後將無法修改，確定嗎？`)) {
-                savedNames[text] = trimmedValue;
+            if (confirm(`鎖定「${selectedValue}」後將無法修改，確定嗎？`)) {
+                savedNames[text] = selectedValue;
                 lockedStatus[text] = true;
                 
                 localStorage.setItem("lift_bingo_names", JSON.stringify(savedNames));
                 localStorage.setItem("lift_bingo_locked", JSON.stringify(lockedStatus));
 
-                // 鎖定 UI
-                inputElement.disabled = true;
+                selectElement.disabled = true;
                 cell.classList.add("has-name");
                 confirmBtnElement.style.display = "none";
             }
         }
 
-        // 切換點擊抽中翻牌狀態（只有「已鎖定名字」的格子才能被點擊翻牌）
         function toggleDrawn(text, cell) {
-            if (!lockedStatus[text]) return; // 未確認鎖定名字前，點擊無效
+            if (!lockedStatus[text]) return;
 
             if (cell.classList.contains("drawn")) {
                 cell.classList.remove("drawn");
@@ -434,6 +458,31 @@
                 drawnStatus[text] = true;
             }
             localStorage.setItem("lift_bingo_drawn", JSON.stringify(drawnStatus));
+
+            checkBingoLine();
+        }
+
+        // 檢查是否有至少一條連線[span_2](start_span)[span_2](end_span)
+        function checkBingoLine() {
+            let hasAtLeastOneLine = false;
+
+            winningCombinations.forEach(combo => {
+                const isLineDrawn = combo.every(index => {
+                    const textKey = shuffledItems[index];
+                    return drawnStatus[textKey] === true;
+                });
+
+                if (isLineDrawn) {
+                    hasAtLeastOneLine = true;
+                }
+            });
+
+            const banner = document.getElementById("bingo-banner");
+            if (hasAtLeastOneLine) {
+                banner.style.display = "block"; // 顯示頂部橫幅[span_3](start_span)[span_3](end_span)
+            } else {
+                banner.style.display = "none";
+            }
         }
 
         function confirmReset() {
@@ -449,7 +498,6 @@
             }
         }
 
-        initDatabase();
         initData();
         renderBoard();
     </script>
